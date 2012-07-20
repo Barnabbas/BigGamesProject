@@ -33,5 +33,4 @@ object Property {
     def apply(name: Symbol) = new Property(name)
     def apply(name: String): Property = apply(Symbol(name))
     
-    implicit def symbolToProperty(symbol: Symbol) = Property(symbol)
 }

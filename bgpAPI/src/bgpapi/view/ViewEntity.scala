@@ -28,7 +28,7 @@ abstract class ViewEntity private[view](viewType: ViewType) {
      * Gets the value of property {@code p} or gets nothing when it is not set
      * @param p the Property to get the value of
      */
-    def apply(p: Property) = values(p)
+    def apply(p: Property) = values.get(p)
     
     /**
      * Sets the value of {@code p} to {@code v}.<br>

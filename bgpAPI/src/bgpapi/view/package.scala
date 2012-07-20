@@ -21,5 +21,10 @@ package bgpapi
     you have added.
  */
 package object view {
+    
+    /**
+     * An implicit function to easy access Properties
+     */
+    implicit def symbolToProperty(symbol: Symbol) = Property(symbol)
 
 }

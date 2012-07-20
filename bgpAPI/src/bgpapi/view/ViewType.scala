@@ -11,12 +11,12 @@ package bgpapi.view
  * ViewEntity.
  */
 
-final class ViewType private(val name: Symbol,
+final class ViewType private(name: Symbol,
                              val properties: List[Property]){
     override def toString = name.toString
 }
                              
 
 object ViewType{
-    val textArea = new ViewType('textArea, List('text))
+    val text = new ViewType('text, List('text))
 }

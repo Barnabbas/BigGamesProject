@@ -22,6 +22,6 @@ trait ViewObject {
      * Gets the value of the Property {@code property} or an empty option if 
      * this ViewObject does not have this Property.
      */
-    def appply(property: Property): Option[Any]
+    def apply(property: Property): Option[Any]
 
 }
