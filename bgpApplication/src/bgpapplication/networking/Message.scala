@@ -59,6 +59,11 @@ object Message{
     }
     
     /**
+     * A Message indicating that a Game can be started.
+     */
+    case object StartGame extends Message
+    
+    /**
      * Messages to change the view using ViewEntities
      */
     object view{

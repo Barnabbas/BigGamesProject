@@ -12,10 +12,10 @@ package bgpapi.view
 trait View {
     
     /**
-     * Adds a new instance of {code viewType} to this View and will return 
+     * Adds a new instance of {@code viewObject} to this View and will return 
      * the ViewEntity which can be used to control this instance.
      */
-    def add(viewType: ViewType): ViewEntity
+    def add(viewObject: ViewObject): ViewEntity
     
     /**
      * Removes a ViewEntity from this View.

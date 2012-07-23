@@ -36,6 +36,7 @@ class Networker(server: Actor, clientActor: Actor) extends Actor{
         waitFor(Message.load.Start)
         load()
         play()
+        waitFor(Message.StartGame)
     }
     
     /**
