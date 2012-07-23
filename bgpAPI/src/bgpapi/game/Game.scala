@@ -6,16 +6,24 @@
 package bgpapi.game
 
 import bgpapi.view.View
+import bgpapi.view.ViewObject
 import java.util.Timer
 import java.util.TimerTask
 
 /**
  * A Game is an instance of a GameFactory that can be used to run 
+ * @param view the View to use
+ * @param objects the ViewObject to use
  */
-abstract class Game(view: View) {
+abstract class Game(view: View, objects: ViewObject*) {
+    
+    /**
+     * The ViewObjects this Game uses
+     */
+    val viewObjects = List(objects)
     
     private val timer = new Timer("Game Timer")
-    var lastTime: Long = 0
+    private var lastTime: Long = 0
     
     // initializing code
     

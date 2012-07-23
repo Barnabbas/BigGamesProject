@@ -10,6 +10,7 @@ package bgpapi.view
  * ViewObjects are normally retrieved from the filesystem and will be loaded to 
  * the client to make it possible for the client to display items
  */
+
 trait ViewObject {
     
     /**
@@ -17,6 +18,12 @@ trait ViewObject {
      * should be displayed.
      */
     val viewType: ViewType
+    
+    /**
+     * An unique name for this ViewObject, it should be formated like: 
+     * {@code authorName.objectName}
+     */
+    val identifier: String
     
     /**
      * Gets the value of the Property {@code property} or an empty option if 

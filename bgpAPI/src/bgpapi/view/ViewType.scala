@@ -19,4 +19,9 @@ final class ViewType private(name: Symbol,
 
 object ViewType{
     val text = new ViewType('text, List('text))
+    
+    /**
+     * All the types that are available
+     */
+    val allTypes = Set(text)
 }

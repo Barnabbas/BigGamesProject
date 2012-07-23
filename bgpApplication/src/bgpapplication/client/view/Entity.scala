@@ -16,8 +16,15 @@ import bgpapi.view._
  * @param viewObject how this Entity should be displayed
  * @param ViewEntity additional properties that can be set during run-time
  */
-class Entity(viewObject: ViewObject, viewEntity: ViewEntity) {
-    val renderer = Renderer.get(viewObject.viewType)
+class Entity(viewObject: ViewObject) {
+    
+    /**
+     * the ViewEntity containing the properties for this Entity
+     */
+    // todo: use real viewEntities
+    val viewEntity = new ViewEntity(){override def onUpdate(p: Property, v: Any) = {}}
+    
+    private val renderer = Renderer.get(viewObject.viewType)
     
     require(renderer.test(viewObject), "Can not display the ViewObject")
     require(renderer.test(viewEntity), "Can not display the ViewEntity")

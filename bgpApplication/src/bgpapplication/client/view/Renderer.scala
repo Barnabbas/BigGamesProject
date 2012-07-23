@@ -49,21 +49,24 @@ object Renderer {
     val renderers = Map(ViewType.text -> TextRenderer)
     
     /**
-     * Gets a Renderer that can render objects of a certain ViewType
+     * Gets a Renderer that can render objects of a certain ViewType.
      * @param viewType the ViewType that should become rendered
      */
     def get(viewType: ViewType) = renderers(viewType)
     
-}
+    // the Renderers
+    
+    /**
+     * Renders text
+     */
+    object TextRenderer extends Renderer {
+        override def display(viewObject: ViewObject, viewEntity: ViewEntity) = {
+            System.out.println(viewObject('text).get)
+        }
 
-/**
- * Renders text
- */
-object TextRenderer extends Renderer {
-    override def display(viewObject: ViewObject, viewEntity: ViewEntity) = {
-        System.out.println(viewObject('text).get)
+        override def test(obj: ViewObject) =
+            hasProperties(obj, 'text)
     }
     
-    override def test(obj: ViewObject) =
-        hasProperties(obj, 'text)
 }
+

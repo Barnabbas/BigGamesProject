@@ -12,6 +12,9 @@ import scala.actors.Actor
 import scala.actors.DaemonActor
 import scala.collection.mutable.HashSet
 
+// todo: design decisions
+// - make it more immutable
+
 /**
  * This is the class that will display everything to the client.<br>
  * It is controlled by adding and removing {@link Entity} instances from it.
@@ -48,11 +51,12 @@ private object ClientViewTester extends App {
     val entity = {
         val vObject = new ViewObject{
             override val viewType = ViewType.text
+            override val identifier = "Barnabbas.test.helloWorld"
             override def apply(prop: Property) = {
                 Option("Hello World!")
             }
         }
-        new Entity(vObject, null)
+        new Entity(vObject)
     }
     
     clientView.add(entity)
