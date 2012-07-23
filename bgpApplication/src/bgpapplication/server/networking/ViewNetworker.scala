@@ -17,7 +17,7 @@ import scala.collection.mutable.HashMap
 /**
  * A new Networker that will send all data to {@code clients}
  */
-class ViewNetworker(clients: List[Actor]) extends View {
+private[networking] class ViewNetworker(clients: List[Actor]) extends View {
     
     /**
      * The entities that are created by this class

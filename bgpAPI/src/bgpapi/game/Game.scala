@@ -38,13 +38,41 @@ abstract class Game(view: View, objects: ViewObject*) {
         }
     }
     
-    def start = {
+    /**
+     * The view of this Game. Will be filled in at {@link #start}
+     */
+    var viewOption = Option.empty[View]
+    
+    def start(view: View) = {
+        viewOption = Option(view)
         lastTime = System.currentTimeMillis
         timer.schedule(timerTask, Game.scheduleTime)
     }
-    def stop = timer.cancel
+    def stop() = timer.cancel
     
+    /**
+     * Will be called when this Game is started.
+     */
+    def init(): Unit
+    /**
+     * Will regulary be called and should be used to update the View and the 
+     * game logic.
+     */
     def update(time: Long): Unit
+    
+    /**
+     * Gets the View of this Game.<br>
+     * The Game must be started before you can get the View.
+     * @throws IllegalStateException if this Game is not started yet
+     */
+    protected def view = {
+        if (viewOption.isEmpty){
+            throw new IllegalStateException("The Game must be started before " +
+                                            "you can get the view")
+        } else {
+            viewOption.get
+        }
+    }
 
 }
 

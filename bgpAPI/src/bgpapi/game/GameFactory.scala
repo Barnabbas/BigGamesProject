@@ -18,6 +18,9 @@ trait GameFactory {
      */
     val identifier: String
     
-    def createGame(view: View): Game
+    /**
+     * Creates a new Game.
+     */
+    def createGame: Game
 
 }
