@@ -7,6 +7,7 @@ package bgpapplication.server.networking
 
 import bgpapi.view.ViewObject
 import scala.actors.Actor
+import Client._
 
 /**
  * This class will load Resources to all the clients.<br>
@@ -23,14 +24,14 @@ private[networking] class ResourceLoader(viewObjects: List[ViewObject]){
     /**
      * The clients that are added
      */
-    private var clients = List.empty[Actor]
+    private var actors = List.empty[Actor]
     
     /**
      * Adds {@code client} such that it will also receive all the viewObjects.
      */
-    def addClient(client: Actor) = {
+    def addClient(client: Client) = {
         import bgpapplication.networking.Message.load._
-        clients ::= Actor.actor{
+        actors ::= Actor.actor{
             client ! Start
             viewObjects.foreach(vo => client ! vo)
             client ! Finish
@@ -42,7 +43,7 @@ private[networking] class ResourceLoader(viewObjects: List[ViewObject]){
      * to a client.
      */
     def isBusy: Boolean = 
-        clients.forall(actor => actor.getState == Actor.State.Terminated)
+        actors.forall(actor => actor.getState == Actor.State.Terminated)
     
     
 }

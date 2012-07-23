@@ -13,11 +13,12 @@ import bgpapplication.networking.Message
 import bgpapplication.networking.Message.view._
 import scala.actors.Actor
 import scala.collection.mutable.HashMap
+import Client._
 
 /**
  * A new Networker that will send all data to {@code clients}
  */
-private[networking] class ViewNetworker(clients: List[Actor]) extends View {
+private[networking] class ViewNetworker(clients: List[Client]) extends View {
     
     /**
      * The entities that are created by this class

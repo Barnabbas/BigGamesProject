@@ -15,12 +15,12 @@ import java.util.TimerTask
  * @param view the View to use
  * @param objects the ViewObject to use
  */
-abstract class Game(view: View, objects: ViewObject*) {
+abstract class Game(objects: List[ViewObject]) {
     
     /**
      * The ViewObjects this Game uses
      */
-    val viewObjects = List(objects)
+    val viewObjects = objects
     
     private val timer = new Timer("Game Timer")
     private var lastTime: Long = 0
@@ -41,7 +41,7 @@ abstract class Game(view: View, objects: ViewObject*) {
     /**
      * The view of this Game. Will be filled in at {@link #start}
      */
-    var viewOption = Option.empty[View]
+    private var viewOption = Option.empty[View]
     
     def start(view: View) = {
         viewOption = Option(view)

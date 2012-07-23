@@ -13,6 +13,7 @@ package bgpapplication.server.networking
 import bgpapi.view.View
 import bgpapi.view.ViewObject
 import scala.actors.Actor
+import scala.actors.OutputChannel
 import scala.actors.Reactor
 
 /**
@@ -40,13 +41,13 @@ class Networker(viewObject: List[ViewObject], playersReactor: Reactor[String]) e
     /**
      * All the clients that are registered to this Networker
      */
-    private var clients = List.empty[Actor]
+    private var clients = List.empty[Client]
     
     /**
      * The view, this should only become initialized when canStart.<br>
      * Only {@link #remoteView} should acces this.
      */
-    private lazy val view = {
+    private lazy val view: View = {
         require(canStart)
         new ViewNetworker(clients)
     }
@@ -71,13 +72,14 @@ class Networker(viewObject: List[ViewObject], playersReactor: Reactor[String]) e
             receive{
                 case Request(name) => {
                       if (allowPlayers){
-                          clients += sender
-                          playerReactor ! name
+                          val client = new Client(name, sender)
+                          clients ::= client
+                          playersReactor ! name
                           
                           sender ! Accept
-                          loader.addClient(sender)
+                          loader.addClient(client)
                       } else {
-                          sender ! Reject("Server is not allowing players at the moment")
+                          sender ! Deny("Server is not allowing players at the moment")
                       }
                 }
             }
