@@ -22,7 +22,7 @@ class Entity(viewObject: ViewObject) {
      * the ViewEntity containing the properties for this Entity
      */
     // todo: use real viewEntities
-    val viewEntity = new ViewEntity(){override def onUpdate(p: Property, v: Any) = {}}
+    val viewEntity = new ViewEntity(viewObject)
     
     private val renderer = Renderer.get(viewObject.viewType)
     

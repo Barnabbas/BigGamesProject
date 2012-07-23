@@ -26,6 +26,14 @@ trait ViewObject {
     val identifier: String
     
     /**
+     * The variables that can be changed for this ViewObject.<br>
+     * Variables are the Properties that a ViewEntity that is created from this
+     * ViewObject will have. Those can be changed such the same entity will be 
+     * drawn different.
+     */
+    val variables: Set[Property]
+    
+    /**
      * Gets the value of the Property {@code property} or an empty option if 
      * this ViewObject does not have this Property.
      */

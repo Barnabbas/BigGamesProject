@@ -9,7 +9,6 @@ package bgpapplication.client.view
 import bgpapi.view._
 import java.util.Scanner
 import scala.actors.Actor
-import scala.actors.DaemonActor
 import scala.collection.mutable.HashSet
 
 // todo: design decisions
@@ -40,25 +39,4 @@ class ClientView {
     
     def add(entity: Entity) = entities += entity
     def remove(entity: Entity) = entities -= entity
-}
-
-private object ClientViewTester extends App {
-    
-    println("running ClientViewTest?")
-    
-    
-    val clientView = new ClientView()
-    val entity = {
-        val vObject = new ViewObject{
-            override val viewType = ViewType.text
-            override val identifier = "Barnabbas.test.helloWorld"
-            override def apply(prop: Property) = {
-                Option("Hello World!")
-            }
-        }
-        new Entity(vObject)
-    }
-    
-    clientView.add(entity)
-
 }

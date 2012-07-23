@@ -98,7 +98,8 @@ class Networker(server: Actor, clientActor: Actor) extends Actor{
         System.err.println("Getting unknown message: " + m)
     }
     
-    
+    // not used yet
+    // todo: maybe remove
     /**
      * The States a Networker can be in
      */
@@ -136,6 +137,7 @@ private object ViewActorTest extends App{
         val vObject = new ViewObject{
             override val viewType = ViewType.text
             override val identifier = "Barnabbas.test.helloWorld"
+            override val variables = Set.empty[Property]
             override def apply(prop: Property) = {
                 Option("Hello World!")
             }
