@@ -5,12 +5,15 @@
 
 package bgpapplication
 
+import bgpapplication.server.GameLoader
 import bgpapplication.server.Server
 import bgpapplication.client.Client
 import bgpapplication.util.Debug
 import java.awt.Color
+import java.io.File
 import javax.swing.border.Border
 import javax.swing.border.LineBorder
+import javax.swing.filechooser.FileFilter
 import scala.swing._
 
 object ControllerFrame extends SimpleSwingApplication {
@@ -37,10 +40,35 @@ object ControllerFrame extends SimpleSwingApplication {
             }
             val startServer = new Action("Start Server"){
                 override def apply() = {
-                    enabled = false
-                    Controller.startServer
-                    startClient.enabled = true
-                    addServerPanel()
+                    val factory = getFactory
+                    
+                    if (factory.isDefined){
+                        enabled = false
+                    
+                        Controller.startServer(factory.get)
+                    
+                        startClient.enabled = true
+                        addServerPanel()
+                    }
+                }
+                
+                /**
+                 * Gets the GameFactory for the Server by using a FileChooser
+                 */
+                private def getFactory = {
+                    val chooser = new FileChooser(new File(".")){
+                        title = "Choose Game"
+                        fileFilter = new FileFilter(){
+                            override def accept(f: File) = GameLoader.canLoad(f) || f.isDirectory
+                            override def getDescription = "BigGamesProject Games"
+                        }
+                    }
+                    
+                    val value = chooser.showOpenDialog(null)
+                    
+                    if (value == FileChooser.Result.Approve){
+                        Option(GameLoader.load(chooser.selectedFile))
+                    } else Option.empty
                 }
             }
         
@@ -81,6 +109,7 @@ object ControllerFrame extends SimpleSwingApplication {
         def addServerPanel(): Unit = {
             
             val serverPanel = {
+                
                 val playerList = new ListView[String]()
                 Server.onPlayerChange = () => {
                     debug("OnPlayerChange has been called")

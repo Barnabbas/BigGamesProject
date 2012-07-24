@@ -9,10 +9,13 @@ package bgpapplication
 /**
  * The main class for this application.
  */
+import bgpapi.game.GameFactory
 import bgpapplication.client.Client
 import bgpapplication.server.Server
 
 object Controller{
+    
+    // todo: redesign, this should control the GUI not the way around
     
     // temporary methods, those will change when we get remote servers
     
@@ -21,8 +24,8 @@ object Controller{
         Client.start(Server.actor)
     }
     
-    def startServer = {
-        Server.start
+    def startServer(factory: GameFactory) = {
+        Server.start(factory)
     }
 
 }

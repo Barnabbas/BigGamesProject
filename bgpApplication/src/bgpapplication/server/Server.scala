@@ -29,15 +29,16 @@ object Server {
     
     private var game: Game = _
     
-    // this is just a test version. Therefore it just uses TestGame for everything
     
-    def start() = {
-        /**
-         * The GameFactory to use
-         */
-        val gameFactory = TestGame
+    /**
+     * Starts a new Server that will run a Game created by {@code factory}
+     */
+    def start(factory: GameFactory) = {
+        
+        debug("Starting " + factory.identifier)
 
-        game = gameFactory.createGame
+        game = factory.createGame
+        
         
         playersReactor.start()
         networker = new Networker(game.viewObjects, playersReactor)
