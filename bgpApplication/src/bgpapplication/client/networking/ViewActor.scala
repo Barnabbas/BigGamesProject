@@ -8,6 +8,7 @@ package bgpapplication.client.networking
 import bgpapplication.client.ResourceManager
 import bgpapplication.client.view.ClientView
 import bgpapplication.client.view.Entity
+import bgpapplication.util.Debug
 import scala.actors.Actor
 import scala.collection.mutable.HashMap
 
@@ -17,6 +18,8 @@ import scala.collection.mutable.HashMap
  */
 private[networking] class ViewActor(view: ClientView, server: Actor) extends Actor {
     
+    val debug = new Debug("ViewActor")
+    
     val entities = new HashMap[Int, Entity]
     
     override def act = {
@@ -25,6 +28,7 @@ private[networking] class ViewActor(view: ClientView, server: Actor) extends Act
         loop {
             receive{
                 case Add(id, obj) => {
+                        debug("new object added: " + obj)
                         val entity = new Entity(ResourceManager.getObject(obj))
                         entities += (id -> entity)
                         view.add(entity)

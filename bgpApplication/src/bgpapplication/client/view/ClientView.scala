@@ -7,9 +7,13 @@ package bgpapplication.client.view
 
 
 import bgpapi.view._
+import bgpapplication.util.Debug
 import java.util.Scanner
 import scala.actors.Actor
 import scala.collection.mutable.HashSet
+import scala.swing.BoxPanel
+import scala.swing.Orientation
+import scala.swing.Panel
 
 // todo: design decisions
 // - make it more immutable
@@ -20,23 +24,25 @@ import scala.collection.mutable.HashSet
  */
 class ClientView {
     
+    private val debug = new Debug("ClientView")
+    
     private val entities = new HashSet[Entity]
     
-    // starting a deamon that will respond on "view" in the console
-    private val actor = new Actor{
-        override def act = {
-            val scanner = new Scanner(System.in)
-            while (scanner.hasNext()){
-                if (scanner.nextLine == "view"){
-                    for (entity <- entities){
-                        entity.display
-                    }
-                }
-            }
+    def add(entity: Entity) = {
+        entities += entity
+        debug("added " + entity)
+    }
+    def remove(entity: Entity) = entities -= entity
+    
+    /**
+     * Runs all data into the console.<br>
+     * This is just for testing, will be removed very soon.
+     */
+    @deprecated
+    def run() = {
+        debug("running...")
+        for(entity <- entities){
+            entity.display
         }
     }
-    actor.start()
-    
-    def add(entity: Entity) = entities += entity
-    def remove(entity: Entity) = entities -= entity
 }

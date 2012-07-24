@@ -8,13 +8,13 @@ package bgpapplication.test
 import bgpapi.game._
 import bgpapi.view._
 
-private class TestGame(vObjects: List[ViewObject]) extends Game(vObjects) {
-    override def init(){
-        println("init")
+class TestGame(vObjects: List[ViewObject]) extends Game(vObjects) {
+    override def init(view: View){
+        println("just started")
+        view.add(TestGame.helloWorld)
     }
     
-    override def update(time: Long){
-        println("update:" + time)
+    override def update(time: Long, view: View){
     }
 }
 
@@ -31,6 +31,7 @@ object TestGame extends GameFactory{
     }
     
     override def createGame: Game = {
+        println("creating game.")
         new TestGame(List(helloWorld))
     }
 }

@@ -24,13 +24,12 @@ class Entity(viewObject: ViewObject) {
     // todo: use real viewEntities
     val viewEntity = new ViewEntity(viewObject)
     
-    private val renderer = Renderer.get(viewObject.viewType)
+    private val renderer = Renderer(viewObject)
     
-    require(renderer.test(viewObject), "Can not display the ViewObject")
     require(renderer.test(viewEntity), "Can not display the ViewEntity")
     
     /**
      * Displays this Entity
      */
-    def display = renderer.display(viewObject, viewEntity)
+    def display = renderer.display(viewEntity)
 }

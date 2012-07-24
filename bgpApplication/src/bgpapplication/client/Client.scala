@@ -8,6 +8,7 @@ package bgpapplication.client
 import bgpapplication.client.networking.Networker
 import bgpapplication.client.view.ClientView
 import scala.actors.Actor
+import scala.actors.OutputChannel
 
 /**
  * The Main Actor that will run the Client
@@ -17,6 +18,11 @@ object Client {
     
     // starting the clientActor
     actor.start()
+    
+    /**
+     * The ClientView used by this Client
+     */
+    lazy val view = new ClientView()
     
     /**
      * Starts this Client.
@@ -31,8 +37,7 @@ object Client {
      * Starts a new Game by creating a new View and sending it to {@code actor}
      * @param actor the Actor that wants to start the game
      */
-    private def startGame(actor: Actor){
-        val view = new ClientView()
+    private def startGame(actor: OutputChannel[Any]){
         actor ! view
     }
     
@@ -44,7 +49,7 @@ object Client {
         override def act(){
             while(true){
                 receive{
-                    case "Start Game" => startGame(actor)
+                    case "Start Game" => startGame(sender)
                 }
             }
         }

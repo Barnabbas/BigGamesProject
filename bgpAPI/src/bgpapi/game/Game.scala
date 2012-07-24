@@ -24,55 +24,46 @@ abstract class Game(objects: List[ViewObject]) {
     
     private val timer = new Timer("Game Timer")
     private var lastTime: Long = 0
+    /**
+     * The view of this Game. Will be filled in at {@link #start}
+     */
+    private var view: View = _
     
     // initializing code
     
     private val timerTask = new TimerTask{
         override def run = {
+            assume(view != null, "The TimerTask is running before the Game is started")
             val currentTime = System.currentTimeMillis
             val deltaTime = currentTime - lastTime
             
-            update(deltaTime)
+            update(deltaTime, view)
             
             lastTime = currentTime
         }
     }
     
-    /**
-     * The view of this Game. Will be filled in at {@link #start}
-     */
-    private var viewOption = Option.empty[View]
     
     def start(view: View) = {
-        viewOption = Option(view)
+        this.view = view
         lastTime = System.currentTimeMillis
-        timer.schedule(timerTask, Game.scheduleTime)
+        timer.scheduleAtFixedRate(timerTask, Game.scheduleTime, Game.scheduleTime)
+        init(view)
     }
     def stop() = timer.cancel
     
     /**
      * Will be called when this Game is started.
+     * @param view the View that is used to draw in
      */
-    def init(): Unit
+    def init(view: View): Unit
     /**
      * Will regulary be called and should be used to update the View and the 
      * game logic.
+     * @param time the time that elapsed since last update. In Miliseconds.
+     * @param view the View that is used to draw in
      */
-    def update(time: Long): Unit
-    
-    /**
-     * Gets the View of this Game.<br>
-     * The Game must be started before you can get the View.
-     * @throws IllegalStateException if this Game is not started yet
-     */
-    protected def view = {
-        if (viewOption.isEmpty){
-            throw new IllegalStateException("The Game must be started before " +
-                                            "you can get the view")
-        } else {
-            viewOption.get
-        }
-    }
+    def update(time: Long, view: View): Unit
 
 }
 

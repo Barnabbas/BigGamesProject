@@ -13,7 +13,6 @@ package bgpapplication.server.networking
 import bgpapi.view.View
 import bgpapi.view.ViewObject
 import scala.actors.Actor
-import scala.actors.OutputChannel
 import scala.actors.Reactor
 
 /**
@@ -62,7 +61,7 @@ class Networker(viewObject: List[ViewObject], playersReactor: Reactor[String]) e
      * This requires {@link #canStart}.
      */
     def remoteView: View = {
-        require(canStart)
+        require(canStart, "The View is only available when this Networker can be started.")
         return view
     }
     
@@ -74,10 +73,10 @@ class Networker(viewObject: List[ViewObject], playersReactor: Reactor[String]) e
                       if (allowPlayers){
                           val client = new Client(name, sender)
                           clients ::= client
-                          playersReactor ! name
                           
-                          sender ! Accept
+                          client ! Accept
                           loader.addClient(client)
+                          playersReactor ! name
                       } else {
                           sender ! Deny("Server is not allowing players at the moment")
                       }

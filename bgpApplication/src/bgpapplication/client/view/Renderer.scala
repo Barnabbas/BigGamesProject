@@ -13,15 +13,9 @@ import bgpapi.view._
 trait Renderer {
     
     /**
-     * Displays {@code viewObject} with additional data from {@code viewEntity}
+     * Displays this Renderer with additional data from {@code viewEntity}
      */
-    def display(viewObject: ViewObject, viewEntity: ViewEntity)
-    
-    /**
-     * Tests whether this Renderer can display {@code viewObject}. This function
-     * checks whether it has the required properties.
-     */
-    def test(viewObject: ViewObject) = true
+    def display(viewEntity: ViewEntity)
     
     /**
      * Tests whether this Renderer can display {@code viewEntity}. This function
@@ -29,43 +23,61 @@ trait Renderer {
      */
     def test(viewEntity: ViewEntity) = true
     
-    
-    /**
-     * Determines whether {@code viewObject} is defined for {@code properties}
-     */
-    protected def hasProperties(viewObject: ViewObject, properties: Property*) =
-        properties.forall((p: Property) => viewObject(p).isDefined)
-    /**
-     * Determines whether {@code viewEntity} is defined for {@code properties}
-     */
-    protected def hasProperties(viewEntity: ViewEntity, properties: Property*) =
-        properties.forall((p: Property) => viewEntity(p).isDefined)
-
 }
 
 
 object Renderer {
     
-    val renderers = Map(ViewType.text -> TextRenderer)
+    private val renderers = Map(ViewType.text -> TextRenderer)
     
     /**
-     * Gets a Renderer that can render objects of a certain ViewType.
-     * @param viewType the ViewType that should become rendered
+     * Creates a Renderer for {@code viewObject}.
+     * @param viewObject the ViewObject to get a Renderer of.
      */
-    def get(viewType: ViewType) = renderers(viewType)
-    
-    // the Renderers
+    def apply(viewObject: ViewObject) = {
+        val vType = viewObject.viewType
+        renderers(vType).apply(viewObject)
+    }
     
     /**
-     * Renders text
+     * Test whether {@code viewObject} can be used to create a Renderer
      */
-    object TextRenderer extends Renderer {
-        override def display(viewObject: ViewObject, viewEntity: ViewEntity) = {
-            System.out.println(viewObject('text).get)
+    def test(viewObject: ViewObject): Boolean = {
+        val vType = viewObject.viewType
+        renderers(vType).test(viewObject)
+    }
+    
+    
+    /**
+     * Determines whether {@code viewEntity} is defined for the variable of {@code viewObject}
+     */
+    private def hasProperties(viewEntity: ViewEntity, viewObject: ViewObject) = 
+        viewObject.variables.forall(p => viewEntity(p).isDefined)
+    
+    
+    /**
+     * Determines whether {@code viewObject} is defined for {@code properties}
+     */
+    private def hasProperties(viewObject: ViewObject, properties: Property*) =
+        properties.forall((p: Property) => viewObject(p).isDefined)
+    
+    
+    /* --- RendererFactory stuff  --- */
+    
+    private trait RendererFactory{
+        def apply(obj: ViewObject): Renderer
+        def test(obj: ViewObject): Boolean
+    }
+    
+    /**
+     * A Factory that will create Renderer to render text
+     */
+    private object TextRenderer extends RendererFactory{
+        def apply(obj: ViewObject) = new Renderer(){
+            override def display(entity: ViewEntity) = println(obj('text).get)
+            override def test(entity: ViewEntity)= hasProperties(entity, obj)
         }
-
-        override def test(obj: ViewObject) =
-            hasProperties(obj, 'text)
+        def test(obj: ViewObject) = hasProperties(obj, 'text)
     }
     
 }

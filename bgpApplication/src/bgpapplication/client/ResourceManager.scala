@@ -14,6 +14,7 @@ package bgpapplication.client
  * Currently this is just an id-manager for ViewObjects
  */
 import bgpapi.view.ViewObject
+import bgpapplication.client.view.Renderer
 
 object ResourceManager {
     
@@ -21,7 +22,13 @@ object ResourceManager {
     
     def getObject(id: String) = objects(id)
     
+    /**
+     * Saves {@code obj} to this ResourceManager.<br>
+     * {@code obj} must be useable for {@code Renderer} otherwise an exception 
+     * will be thrown.
+     */
     def saveResource(obj: ViewObject) = {
+        require(Renderer.test(obj), "ViewObject " + obj.identifier + " is wrongly formatted!")
         objects += (obj.identifier -> obj)
     }
 

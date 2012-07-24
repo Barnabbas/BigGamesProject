@@ -43,7 +43,7 @@ private[networking] class ResourceLoader(viewObjects: List[ViewObject]){
      * to a client.
      */
     def isBusy: Boolean = 
-        actors.forall(actor => actor.getState == Actor.State.Terminated)
+        !actors.forall(actor => actor.getState == Actor.State.Terminated)
     
     
 }

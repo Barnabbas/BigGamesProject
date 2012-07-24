@@ -20,6 +20,9 @@ import Client._
  */
 private[networking] class ViewNetworker(clients: List[Client]) extends View {
     
+    // telling all clients to start
+    Actor.actor(clients.foreach(c => c ! Message.StartGame))
+    
     /**
      * The entities that are created by this class
      */
@@ -67,6 +70,7 @@ private[networking] class ViewNetworker(clients: List[Client]) extends View {
      */
     private def genEntityID() = {
         // just a simple function that keeps counting up
+        
         assume(id < Integer.MAX_VALUE)
         
         id += 1

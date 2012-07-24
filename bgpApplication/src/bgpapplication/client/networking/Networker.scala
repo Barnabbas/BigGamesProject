@@ -19,6 +19,7 @@ import bgpapplication.networking.Message
 import bgpapplication.networking.Message._
 import scala.actors.Actor
 import scala.actors.Actor._
+import bgpapplication.util.Debug
 
 /**
  * A new Networker that will hold a connection with {@code server}
@@ -35,8 +36,8 @@ class Networker(server: Actor, clientActor: Actor) extends Actor{
         connect()
         waitFor(Message.load.Start)
         load()
-        play()
         waitFor(Message.StartGame)
+        play()
     }
     
     /**
@@ -46,11 +47,13 @@ class Networker(server: Actor, clientActor: Actor) extends Actor{
     private def connect() = {
         import register._
         
-        server ! Request("first Networker")
+        server ! Request("/me")
         receive{
             case Deny(reason) => throw new Networker.ConnectionDeniedException(reason)
             case Accept => // we are done
         }
+        
+        Networker.debug("connected")
     }
     
     /**
@@ -68,6 +71,8 @@ class Networker(server: Actor, clientActor: Actor) extends Actor{
      * Handles the loading state
      */
     private def load() = {
+           
+        Networker.debug("start Loading")
         
         var isRunning = true
         
@@ -83,14 +88,21 @@ class Networker(server: Actor, clientActor: Actor) extends Actor{
      * handles the view stuff
      */
     private def play() = {
+           
+        Networker.debug("Start playing")
         
         // just use the ViewActor
         val view = (clientActor !? "Start Game").asInstanceOf[ClientView]
         val viewActor = new ViewActor(view, server)
         viewActor.start()
+        
+        
         while(true) {
             receive {
-                case m => viewActor.forward(m)
+                case m => {
+                        Networker.debug("forwarding " + m)
+                        viewActor.forward(m)
+                }
             }
         }
     }
@@ -108,6 +120,8 @@ object Networker{
     private[networking] def wrongMessage(m: Any) = {
         System.err.println("Getting unknown message: " + m)
     }
+    
+    private[networking] val debug = new Debug("Networker(Client)")
     
 }
 

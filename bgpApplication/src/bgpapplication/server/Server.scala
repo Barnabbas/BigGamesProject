@@ -15,20 +15,35 @@ package bgpapplication.server
 import bgpapi.game._
 import bgpapplication.server.networking.Networker
 import bgpapplication.test.TestGame
+import bgpapplication.util.Debug
 import scala.actors.Actor
 import scala.actors.Reactor
 
-object Server extends App {
+// todo: rewrite: it became very ugly after adding the start def
+
+object Server {
     
-    // this is just a test version. Therefore it just takes a GameFactory itself
-    // without really loading it
+    private val debug = new Debug("Server")
     
-    /**
-     * The GameFactory to use
-     */
-    private val gameFactory = TestGame
+    private var networker: Networker = _
     
-    private val game = gameFactory.createGame
+    private var game: Game = _
+    
+    // this is just a test version. Therefore it just uses TestGame for everything
+    
+    def start() = {
+        /**
+         * The GameFactory to use
+         */
+        val gameFactory = TestGame
+
+        game = gameFactory.createGame
+        
+        playersReactor.start()
+        networker = new Networker(game.viewObjects, playersReactor)
+        networker.start()
+    }
+    
     
     /**
      * The Reactor that will be notified when a Player joins this Game
@@ -41,22 +56,52 @@ object Server extends App {
         }
     }
     
-    val networker = new Networker(game.viewObjects, playersReactor)
     
     /**
      * The actor of the Server.<br>
      * To this Actor request for joining the Server should be send
      */
-    val actor: Actor = networker
+    def actor: Actor = networker
+    
+    /**
+     * Determines if we can start a Game
+     */
+    def canStart = networker.canStart
+    /**
+     * Starts a Game.
+     * Requires {@code canStart}
+     */
+    def startGame() = {
+        require(canStart, "Can not start the Game yet")
+        networker.allowPlayers = false
+        game.start(networker.remoteView)
+        
+        debug("Game started!")
+    }
+    
+    /* --- joined player stuff --- */
+    /**
+     * The names of the players that joined this Server
+     */
+    private var joinedPlayers = List.empty[String]
+    
+    /**
+     * A List containing the names of the players that joined this Server
+     */
+    def players = joinedPlayers
+    
+    /**
+     * Will be called when the list of players changes
+     */
+    var onPlayerChange: () => Unit = _
     
     
     private def onPlayerJoin(name: String){
-        // start waiting for when the player is done
-        while (!networker.canStart){
-            Thread sleep 100
-        }
-        val view = networker.remoteView
-        game.start(view)
+        debug(name + " has joined the Game.")
+        
+        joinedPlayers ::= name
+        
+        onPlayerChange()
     }
 
 }
