@@ -17,6 +17,7 @@ import bgpapplication.client.ResourceManager
 import bgpapplication.client.view.ClientView
 import bgpapplication.networking.Message
 import bgpapplication.networking.Message._
+import scala.actors.AbstractActor
 import scala.actors.Actor
 import scala.actors.Actor._
 import bgpapplication.util.Debug
@@ -27,7 +28,7 @@ import bgpapplication.util.Debug
  * @param clientActor the Actor of the Client to inform changes to
  * @throws ConnectionDeniedException if {@code server} does not except the connection
  */
-class Networker(server: Actor, clientActor: Actor) extends Actor{
+class Networker(server: AbstractActor, clientActor: Actor) extends Actor{
     
     /**
      * Runs this Networker
@@ -124,67 +125,3 @@ object Networker{
     private[networking] val debug = new Debug("Networker(Client)")
     
 }
-
-/**
- * Just some test for the ViewActor; will be removed later on
- */
-private object ViewActorTest extends App{
-    
-    val networker = new Networker(server, client)
-    client.start()
-    server.start()
-    networker.start()
-    
-    println("everything started")
-    
-    
-    object server extends Actor{
-        
-        val vObject = new ViewObject{
-            override val viewType = ViewType.text
-            override val identifier = "Barnabbas.test.helloWorld"
-            override val variables = Set.empty[Property]
-            override def apply(prop: Property) = {
-                Option("Hello World!")
-            }
-        }
-        
-        override def act = {
-            println("server started")
-            loop {
-                receive{
-                    case register.Request(name) => {
-                            println("register " + name)
-                            
-                            val netw = sender
-                            
-                            netw ! register.Accept
-                            
-                            netw ! load.Start
-                            // sending objects
-                            netw ! vObject
-                            netw ! load.Finish
-                            
-                            // running the view
-                            val id = 1
-                            netw ! view.Add(id, vObject.identifier)
-                            
-                            println("Done modifying the view!")
-                        }
-                }
-            }
-        }
-    }
-    
-    object client extends Actor{
-        override def act = {
-            loop{
-                
-                receive{
-                    case "Start Game" => sender ! new ClientView
-                }
-            }
-        }
-    }
-}
-

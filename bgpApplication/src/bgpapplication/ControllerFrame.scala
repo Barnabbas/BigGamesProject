@@ -31,9 +31,8 @@ object ControllerFrame extends SimpleSwingApplication {
         val controllerPanel = {
             // the actions
             val startClient = new Action("Start Client"){
-                enabled = false
                 override def apply = {
-                    Controller.startClient
+                    Controller.startClient("localhost")
                     enabled = false
                     addClientPanel()
                 }
@@ -47,7 +46,6 @@ object ControllerFrame extends SimpleSwingApplication {
                     
                         Controller.startServer(factory.get)
                     
-                        startClient.enabled = true
                         addServerPanel()
                     }
                 }

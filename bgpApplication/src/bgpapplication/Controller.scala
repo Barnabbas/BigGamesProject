@@ -12,6 +12,8 @@ package bgpapplication
 import bgpapi.game.GameFactory
 import bgpapplication.client.Client
 import bgpapplication.server.Server
+import scala.actors.remote.Node
+import scala.actors.remote.RemoteActor
 
 object Controller{
     
@@ -19,9 +21,10 @@ object Controller{
     
     // temporary methods, those will change when we get remote servers
     
-    def startClient = {
-        require(Server.actor != null)
-        Client.start(Server.actor)
+    def startClient(address: String) = {
+        val serverActor = RemoteActor.select(new Node(address, 61090), 'BigGameProject)
+        require(serverActor != null)
+        Client.start(serverActor)
     }
     
     def startServer(factory: GameFactory) = {

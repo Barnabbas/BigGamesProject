@@ -11,13 +11,16 @@ package bgpapi.view
  * ViewEntity.
  */
 
-final class ViewType private(name: Symbol,
-                             val properties: List[Property]){
+final class ViewType private(private val name: Symbol, val properties: List[Property])
+        extends Serializable{
     override def toString = name.toString
+    override def hashCode = name.hashCode
+    override def equals (a: Any) = 
+        a.isInstanceOf[ViewType] && a.asInstanceOf[ViewType].name == name
 }
                              
 
-object ViewType{
+object ViewType extends App{
     val text = new ViewType('text, List('text))
     
     /**

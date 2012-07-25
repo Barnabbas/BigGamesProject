@@ -13,11 +13,14 @@ package bgpapplication.server
  * At The moment this will only load the first GameFactory that is on the list.
  */
 import bgpapi.game.GameFactory
+import bgpapplication.util.Debug
 import java.io.File
 import java.net.URLClassLoader
 import java.util.Scanner
 
 object GameLoader {
+    
+    private val debug = new Debug("GameLoader")
     
     /**
      * Determines whether {@code file} can be loaded to get GameFactories from.
@@ -39,6 +42,8 @@ object GameLoader {
     def load(file: File): GameFactory = {
         require(canLoad(file), "Can not load File: " + file)
         
+        debug("loading file " + file)
+        
         val classLoader = new URLClassLoader(Array(file.toURI.toURL))
         
         val names = getNames(classLoader)
@@ -52,6 +57,8 @@ object GameLoader {
         
         // try to get object class first
         val name = names(0)
+        debug("loading class " + name)
+        
         if (name.endsWith("$")){ // this is an object class
             getObjectFactory(name)
         } else { // the Factory is a standalone class

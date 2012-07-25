@@ -6,6 +6,7 @@
 package bgpapplication.server.networking
 
 import bgpapi.view.ViewObject
+import bgpapplication.util.AppViewObject
 import scala.actors.Actor
 import Client._
 
@@ -22,6 +23,12 @@ import Client._
 private[networking] class ResourceLoader(viewObjects: List[ViewObject]){
     
     /**
+     * Using AppViewObjects to be sure the client can read them.<br>
+     * (sometimes you got strange implementations from the client.)
+     */
+    private val appViewObjects = viewObjects map (vo => new AppViewObject(vo))
+    
+    /**
      * The clients that are added
      */
     private var actors = List.empty[Actor]
@@ -33,7 +40,7 @@ private[networking] class ResourceLoader(viewObjects: List[ViewObject]){
         import bgpapplication.networking.Message.load._
         actors ::= Actor.actor{
             client ! Start
-            viewObjects.foreach(vo => client ! vo)
+            appViewObjects.foreach(vo => client ! vo)
             client ! Finish
         }
     }

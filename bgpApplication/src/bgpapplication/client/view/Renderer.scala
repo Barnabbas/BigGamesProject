@@ -9,6 +9,7 @@ package bgpapplication.client.view
  * A Renderer is used to display ViewObjects
  */
 import bgpapi.view._
+import bgpapplication.util.Debug
 
 trait Renderer {
     
@@ -28,7 +29,10 @@ trait Renderer {
 
 object Renderer {
     
+    private val debug = new Debug("Renderer")
+    
     private val renderers = Map(ViewType.text -> TextRenderer)
+    debug("Renderers for: " + renderers.keySet)
     
     /**
      * Creates a Renderer for {@code viewObject}.

@@ -14,10 +14,10 @@ package bgpapplication.server
  */
 import bgpapi.game._
 import bgpapplication.server.networking.Networker
-import bgpapplication.test.TestGame
 import bgpapplication.util.Debug
 import scala.actors.Actor
 import scala.actors.Reactor
+import scala.actors.remote.RemoteActor
 
 // todo: rewrite: it became very ugly after adding the start def
 
@@ -43,6 +43,10 @@ object Server {
         playersReactor.start()
         networker = new Networker(game.viewObjects, playersReactor)
         networker.start()
+        
+        // registering on the networker
+        RemoteActor.alive(61090)
+        RemoteActor.register('BigGameProject, networker)
     }
     
     

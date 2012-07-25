@@ -7,6 +7,7 @@ package bgpapplication.client
 
 import bgpapplication.client.networking.Networker
 import bgpapplication.client.view.ClientView
+import scala.actors.AbstractActor
 import scala.actors.Actor
 import scala.actors.OutputChannel
 
@@ -28,7 +29,7 @@ object Client {
      * Starts this Client.
      * @param server the Server to register to
      */
-    def start(server: Actor) = {
+    def start(server: AbstractActor) = {
         val networker = new Networker(server, actor)
         networker.start()
     }

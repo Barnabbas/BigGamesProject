@@ -11,7 +11,7 @@ package bgpapi.view
  * the client to make it possible for the client to display items
  */
 
-trait ViewObject {
+trait ViewObject extends Serializable {
     
     /**
      * The type of this Object. This is used to tell the view how this Object
@@ -34,9 +34,19 @@ trait ViewObject {
     val variables: Set[Property]
     
     /**
+     * The Values of the Properties of this ViewObject.<br>
+     * Those are the description of how this ViewObject will look like. 
+     * Note that it is required to have a value for all properties in 
+     * {@code viewType.allTypes}.
+     */
+    val values: Map[Property, Any]
+    
+    /**
      * Gets the value of the Property {@code property} or an empty option if 
      * this ViewObject does not have this Property.
      */
-    def apply(property: Property): Option[Any]
+    def apply(property: Property) = values.get(property)
+    
+    override def toString = identifier
 
 }

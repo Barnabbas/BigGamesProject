@@ -16,7 +16,7 @@ package bgpapi.view
  * 
  *  @param name the name of this proeprty 
  */
-final class Property private[view] (val name: Symbol) {
+final class Property private[view] (val name: Symbol) extends Serializable {
     
     private[view] def this(name: String) = this(Symbol(name))
     

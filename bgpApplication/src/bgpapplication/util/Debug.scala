@@ -38,7 +38,7 @@ object Debug {
     /**
      * The debuggers that are allowed
      */
-    var debuggers = List("Server", "ControllerFrame", "ClientView", "Networker(Client)")
+    var debuggers = List("Server", "GameLoader", "Renderer")
     
     /**
      * Will run {@code body} when {@code isDebuggin}
