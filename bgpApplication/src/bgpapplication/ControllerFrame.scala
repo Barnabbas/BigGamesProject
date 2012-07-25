@@ -29,14 +29,25 @@ object ControllerFrame extends SimpleSwingApplication {
          * The Panel used for the Controller
          */
         val controllerPanel = {
-            // the actions
-            val startClient = new Action("Start Client"){
-                override def apply = {
-                    Controller.startClient("localhost")
-                    enabled = false
-                    addClientPanel()
+            
+            val clientStarter = {
+                
+                val textField = new TextField("localhost"){
+                    columns = 8 // enough for most ip-addresses
                 }
+                
+                // the actions
+                val startClient = new Action("Start Client"){
+                    override def apply = {
+                        Controller.startClient(textField.text)
+                        enabled = false
+                        addClientPanel()
+                    }
+                }
+                
+                new FlowPanel(textField, new Button(startClient))
             }
+            
             val startServer = new Action("Start Server"){
                 override def apply() = {
                     val factory = getFactory
@@ -70,9 +81,10 @@ object ControllerFrame extends SimpleSwingApplication {
                 }
             }
         
-            new FlowPanel(){
+            // the panel
+            new BoxPanel(Orientation.Vertical){
                 contents += new Button(startServer)
-                contents += new Button(startClient)
+                contents += clientStarter
             }
         }
         
