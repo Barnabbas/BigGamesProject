@@ -5,10 +5,14 @@
 
 package bgpapplication.server.networking
 
+import bgpapi.Resource
+import bgpapi.view.ViewDefinition
 import bgpapi.view.ViewObject
-import bgpapplication.util.AppViewObject
+import bgpapplication.networking.NetworkViewObject
+import bgpapplication.util.Debug
 import scala.actors.Actor
 import Client._
+import scala.collection.mutable.HashMap
 
 /**
  * This class will load Resources to all the clients.<br>
@@ -17,16 +21,36 @@ import Client._
  */
 
 /**
- * Constructs a new ResourceLoader that will load {@code viewObjects} to all 
+ * Constructs a new ResourceLoader that will load {@code res} to all 
  * clients that are added to this ResourceLoader
  */
-private[networking] class ResourceLoader(viewObjects: List[ViewObject]){
+private[networking] class ResourceLoader(res: List[Resource]){
+    
+    private val debug = new Debug("ResourceLoader")
+    debug("Getting resources " + res)
     
     /**
-     * Using AppViewObjects to be sure the client can read them.<br>
-     * (sometimes you got strange implementations from the client.)
+     * A Map from identifier to the resource
      */
-    private val appViewObjects = viewObjects map (vo => new AppViewObject(vo))
+    private val resources = res.map(r => (r.identifier -> r)).toMap
+    
+    /**
+     * The resources in order to send
+     */
+    private val orderedResources = topologicalSort(resources)
+    
+    /**
+     * The data to send (in order)
+     */
+    private val sendData = {
+        for (res <- orderedResources) yield res match{
+            case vObj: ViewObject => NetworkViewObject(vObj)
+            case vDef: ViewDefinition => new ResourceLoader.AppViewDefinition(vDef)
+            case red => res
+         }
+    }
+    
+    debug("Will be sending: " + sendData)
     
     /**
      * The clients that are added
@@ -40,7 +64,7 @@ private[networking] class ResourceLoader(viewObjects: List[ViewObject]){
         import bgpapplication.networking.Message.load._
         actors ::= Actor.actor{
             client ! Start
-            appViewObjects.foreach(vo => client ! vo)
+            sendData.foreach(d => {client ! d; debug("sending " + d)})
             client ! Finish
         }
     }
@@ -52,5 +76,27 @@ private[networking] class ResourceLoader(viewObjects: List[ViewObject]){
     def isBusy: Boolean = 
         !actors.forall(actor => actor.getState == Actor.State.Terminated)
     
+    /**
+     * Gives a list that is a topolical sort of the Reources in {@code resources}
+     */
+    def topologicalSort(resources: Map[String, Resource]) = {
+        
+        // todo: make real topological sort
+        // (this will propably be easier when we have on file to load all
+        
+        resources.values.filter(r => r.isInstanceOf[ViewDefinition]) ++
+                resources.values.filter(r => r.isInstanceOf[ViewObject])
+    }
     
+}
+
+object ResourceLoader {
+    
+    /**
+     * temporary class to get a ViewDefinition implementation
+     */
+    private class AppViewDefinition(definition: ViewDefinition) extends ViewDefinition {
+        override val identifier = definition.identifier
+        override val variables = definition.variables
+    }
 }

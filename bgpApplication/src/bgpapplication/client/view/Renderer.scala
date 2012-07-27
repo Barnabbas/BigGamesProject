@@ -31,7 +31,7 @@ object Renderer {
     
     private val debug = new Debug("Renderer")
     
-    private val renderers = Map(ViewType.text -> TextRenderer)
+    private val renderers = Map(new ViewType('text, List('text)) -> TextRenderer)
     debug("Renderers for: " + renderers.keySet)
     
     /**
@@ -56,7 +56,7 @@ object Renderer {
      * Determines whether {@code viewEntity} is defined for the variable of {@code viewObject}
      */
     private def hasProperties(viewEntity: ViewEntity, viewObject: ViewObject) = 
-        viewObject.variables.forall(p => viewEntity(p).isDefined)
+        viewObject.definition.variables.forall(p => viewEntity(p).isDefined)
     
     
     /**
@@ -64,6 +64,18 @@ object Renderer {
      */
     private def hasProperties(viewObject: ViewObject, properties: Property*) =
         properties.forall((p: Property) => viewObject(p).isDefined)
+    
+    /**
+     * Returns the value of property {@code property}. Based on the ViewObject and
+     * ViewEntity.
+     */
+    private def value(viewObject: ViewObject, viewEntity: ViewEntity, property: Property) = {
+        import PropertyValue._
+        viewObject(property).get match {
+            case Data(data) => data
+            case Variable(variable) => viewEntity(variable)
+        }
+    }
     
     
     /* --- RendererFactory stuff  --- */
@@ -78,7 +90,8 @@ object Renderer {
      */
     private object TextRenderer extends RendererFactory{
         def apply(obj: ViewObject) = new Renderer(){
-            override def display(entity: ViewEntity) = println(obj('text).get)
+            override def display(entity: ViewEntity) = 
+                println(value(obj, entity, 'text))
             override def test(entity: ViewEntity)= hasProperties(entity, obj)
         }
         def test(obj: ViewObject) = hasProperties(obj, 'text)

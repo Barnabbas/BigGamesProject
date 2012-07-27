@@ -41,7 +41,7 @@ object Server {
         
         
         playersReactor.start()
-        networker = new Networker(game.viewObjects, playersReactor)
+        networker = new Networker(game.resources, playersReactor)
         networker.start()
         
         // registering on the networker

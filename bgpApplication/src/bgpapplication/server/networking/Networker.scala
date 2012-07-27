@@ -10,19 +10,19 @@ package bgpapplication.server.networking
  * Here is the communication done.
  */
 
+import bgpapi.Resource
 import bgpapi.view.View
-import bgpapi.view.ViewObject
 import scala.actors.Actor
 import scala.actors.Reactor
 
 /**
  * Creates a new Networker.<br>
- * This Networker will host a Game that requires {@code viewObject} to run.
+ * This Networker will host a Game that requires {@code resources} to run.
  * 
- * @param viewObject the Objects to run the Game on.
+ * @param resources the Resources to run the Game on.
  * @param playersReactor a Reactor where all new players will be send to.
  */
-class Networker(viewObject: List[ViewObject], playersReactor: Reactor[String]) extends Actor {
+class Networker(resources: List[Resource], playersReactor: Reactor[String]) extends Actor {
     
     
     /**
@@ -35,7 +35,7 @@ class Networker(viewObject: List[ViewObject], playersReactor: Reactor[String]) e
     /**
      * The ResourceLoader for this Networker.
      */
-    private val loader = new ResourceLoader(viewObject)
+    private val loader = new ResourceLoader(resources)
     
     /**
      * All the clients that are registered to this Networker

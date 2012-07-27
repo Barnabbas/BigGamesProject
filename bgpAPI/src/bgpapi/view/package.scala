@@ -18,7 +18,8 @@ package bgpapi
     the properties a ViewObject has.<br>
     After adding a new object to the View, you will get a ViewEntity. This
     ViewEntity can be used to control the new instance of the ViewObject 
-    you have added.
+    you have added. The variables that a ViewEntity can control are defined by 
+    a ViewDefinition that is owned by each ViewObject.
  */
 package object view {
     

@@ -5,6 +5,7 @@
 
 package bgpapi.game
 
+import bgpapi.Resource
 import bgpapi.view.View
 import bgpapi.view.ViewObject
 import java.util.Timer
@@ -15,12 +16,12 @@ import java.util.TimerTask
  * @param view the View to use
  * @param objects the ViewObject to use
  */
-abstract class Game(objects: List[ViewObject]) {
+abstract class Game(res: List[Resource]) {
     
     /**
      * The ViewObjects this Game uses
      */
-    val viewObjects = objects
+    val resources = res
     
     private val timer = new Timer("Game Timer")
     private var lastTime: Long = 0

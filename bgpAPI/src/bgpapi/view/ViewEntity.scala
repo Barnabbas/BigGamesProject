@@ -50,7 +50,7 @@ class ViewEntity(viewObject: ViewObject) {
     /**
      * The Properties that can have value set, for this Entity
      */
-    final val properties = viewObject.variables
+    final val properties = viewObject.definition.variables
     
     /**
      * Will be called when a property value got changed.<br>

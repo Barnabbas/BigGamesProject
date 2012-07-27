@@ -10,16 +10,15 @@ package bgpapplication.client.networking
  * A Networker can send the following messages to the Actor used for the ClientActor.<br>:
  * "Start Game": this should return a ClientView this Networker can send the changes to.
  */
-import bgpapi.view.Property
-import bgpapi.view.ViewObject
-import bgpapi.view.ViewType
-import bgpapplication.client.ResourceManager
+import bgpapi.view.ViewDefinition
+import bgpapplication.client.resources._
 import bgpapplication.client.view.ClientView
-import bgpapplication.networking.Message
+import bgpapplication.networking._
 import bgpapplication.networking.Message._
 import scala.actors.AbstractActor
 import scala.actors.Actor
 import scala.actors.Actor._
+import bgpapplication.networking.NetworkViewObject
 import bgpapplication.util.Debug
 
 /**
@@ -79,7 +78,15 @@ class Networker(server: AbstractActor, clientActor: Actor) extends Actor{
         
         while(isRunning){
             receive{
-                case obj: ViewObject => ResourceManager.saveResource(obj)
+                case obj: NetworkViewObject => {
+                        val vObj = new ClientViewObject(obj)
+                        ResourceManager.saveResource(vObj)
+                        Networker.debug("receiving: " + vObj)
+                    }
+                case definition: ViewDefinition => {
+                        ResourceManager.saveResource(definition)
+                        Networker.debug("receiving: " + definition)
+                }
                 case Message.load.Finish => isRunning = false//done
             }
         }
@@ -103,7 +110,7 @@ class Networker(server: AbstractActor, clientActor: Actor) extends Actor{
                 case m => {
                         Networker.debug("forwarding " + m)
                         viewActor.forward(m)
-                }
+                    }
             }
         }
     }

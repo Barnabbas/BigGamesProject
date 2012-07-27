@@ -11,7 +11,9 @@ package bgpapi.view
  * the client to make it possible for the client to display items
  */
 
-trait ViewObject extends Serializable {
+import bgpapi.Resource
+
+trait ViewObject extends Resource {
     
     /**
      * The type of this Object. This is used to tell the view how this Object
@@ -20,33 +22,17 @@ trait ViewObject extends Serializable {
     val viewType: ViewType
     
     /**
-     * An unique name for this ViewObject, it should be formated like: 
-     * {@code authorName.objectName}
+     * The Definition that used to define the variables this ViewObject will have
      */
-    val identifier: String
+    def definition: ViewDefinition
     
-    /**
-     * The variables that can be changed for this ViewObject.<br>
-     * Variables are the Properties that a ViewEntity that is created from this
-     * ViewObject will have. Those can be changed such the same entity will be 
-     * drawn different.
-     */
-    val variables: Set[Property]
-    
-    /**
-     * The Values of the Properties of this ViewObject.<br>
-     * Those are the description of how this ViewObject will look like. 
-     * Note that it is required to have a value for all properties in 
-     * {@code viewType.allTypes}.
-     */
-    val values: Map[Property, Any]
     
     /**
      * Gets the value of the Property {@code property} or an empty option if 
      * this ViewObject does not have this Property.
      */
-    def apply(property: Property) = values.get(property)
+    def apply(property: Property): Option[PropertyValue]
     
-    override def toString = identifier
+    override def requirements = List(definition.identifier)
 
 }

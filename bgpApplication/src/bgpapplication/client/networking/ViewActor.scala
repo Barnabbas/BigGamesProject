@@ -5,7 +5,7 @@
 
 package bgpapplication.client.networking
 
-import bgpapplication.client.ResourceManager
+import bgpapplication.client.resources.ResourceManager
 import bgpapplication.client.view.ClientView
 import bgpapplication.client.view.Entity
 import bgpapplication.util.Debug
