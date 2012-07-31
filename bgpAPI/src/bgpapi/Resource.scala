@@ -8,7 +8,7 @@ package bgpapi
 /**
  * A Resource is an object that is loaded from outside of the application.<br>
  * Those are loaded by the Game developers, for example the ViewObjects and such.
- * Those Resources can be used to be streamed to the Clients.
+ * Those Resources are used to be streamed to the Clients.
  */
 trait Resource extends Immutable {
     

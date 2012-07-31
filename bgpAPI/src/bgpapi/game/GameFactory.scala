@@ -19,8 +19,14 @@ trait GameFactory {
     val identifier: String
     
     /**
-     * Creates a new Game.
+     * The settings that this GameFactory has.
      */
-    def createGame: Game
+    val settings: List[String]
+    
+    /**
+     * Creates a new Game.
+     * @param theme the GameTheme to run for the Game
+     */
+    def createGame(theme: GameTheme): Game
 
 }
