@@ -9,10 +9,10 @@ import bgpapi.Resource
 import bgpapi.view.ViewDefinition
 import bgpapi.view.ViewObject
 import bgpapplication.networking.NetworkViewObject
+import bgpapplication.server.resources.ResourceLoader
 import bgpapplication.util.Debug
 import scala.actors.Actor
 import Client._
-import scala.collection.mutable.HashMap
 
 /**
  * This class will load Resources to all the clients.<br>

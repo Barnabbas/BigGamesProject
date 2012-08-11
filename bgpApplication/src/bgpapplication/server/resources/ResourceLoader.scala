@@ -70,7 +70,7 @@ class ResourceLoader(file: File) {
     def requiredResources: List[Resource] = {
         var list = List.empty[Resource]
         
-        def scan(res: Resource) = {
+        def scan(res: Resource): Unit = {
             list ::= res
             for (r <- res.requirements){
                 scan(r)

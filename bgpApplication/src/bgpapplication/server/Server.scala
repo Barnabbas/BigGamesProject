@@ -14,6 +14,8 @@ package bgpapplication.server
  */
 import bgpapi.game._
 import bgpapplication.server.networking.Networker
+import bgpapplication.server.resources.GameLoader
+import bgpapplication.server.resources.ResourceLoader
 import bgpapplication.util.Debug
 import java.io.File
 import scala.actors.Actor
@@ -32,15 +34,16 @@ object Server {
     
     
     /**
-     * Starts a new Server that will run a Game created by {@code factory}
+     * Starts the server such that it will use the resources from {@code loader}.<br>
+     * It will immediatly create a Game that is based on the data loaded from {@code loader}.
      */
-    def start(gameTheme: File) = {
+    def start(loader: ResourceLoader) = {
 
-        game = factory.createGame
+        game = GameLoader.createGame(loader)
         
         
         playersReactor.start()
-        networker = new Networker(game.resources, playersReactor)
+        networker = new Networker(loader, playersReactor)
         networker.start()
         
         // registering on the networker

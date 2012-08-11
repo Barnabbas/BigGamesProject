@@ -9,9 +9,9 @@ package bgpapplication
 /**
  * The main class for this application.
  */
-import bgpapi.game.GameFactory
 import bgpapplication.client.Client
 import bgpapplication.server.Server
+import bgpapplication.server.resources.ResourceLoader
 import scala.actors.remote.Node
 import scala.actors.remote.RemoteActor
 
@@ -27,8 +27,8 @@ object Controller{
         Client.start(serverActor)
     }
     
-    def startServer(factory: GameFactory) = {
-        Server.start(factory)
+    def startServer(loader: ResourceLoader) = {
+        Server.start(loader)
     }
 
 }

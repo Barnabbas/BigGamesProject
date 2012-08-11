@@ -5,9 +5,9 @@
 
 package bgpapplication
 
-import bgpapplication.server.GameLoader
 import bgpapplication.server.Server
 import bgpapplication.client.Client
+import bgpapplication.server.resources.ResourceLoader
 import bgpapplication.util.Debug
 import java.awt.Color
 import java.io.File
@@ -50,33 +50,33 @@ object ControllerFrame extends SimpleSwingApplication {
             
             val startServer = new Action("Start Server"){
                 override def apply() = {
-                    val factory = getFactory
+                    val resourceLoader = getResourceLoader
                     
-                    if (factory.isDefined){
+                    if (resourceLoader.isDefined){
                         enabled = false
                     
-                        Controller.startServer(factory.get)
+                        Controller.startServer(resourceLoader.get)
                     
                         addServerPanel()
                     }
                 }
                 
                 /**
-                 * Gets the GameFactory for the Server by using a FileChooser
+                 * Gets the ResourceLoader for the Server by using a FileChooser
                  */
-                private def getFactory = {
+                private def getResourceLoader = {
                     val chooser = new FileChooser(new File(".")){
                         title = "Choose Game"
                         fileFilter = new FileFilter(){
-                            override def accept(f: File) = GameLoader.canLoad(f) || f.isDirectory
-                            override def getDescription = "BigGamesProject Games"
+                            override def accept(f: File) = ResourceLoader.canLoad(f) || f.isDirectory
+                            override def getDescription = "BigGamesProject GameThemes"
                         }
                     }
                     
                     val value = chooser.showOpenDialog(null)
                     
                     if (value == FileChooser.Result.Approve){
-                        Option(GameLoader.load(chooser.selectedFile))
+                        Option(new ResourceLoader(chooser.selectedFile))
                     } else Option.empty
                 }
             }
