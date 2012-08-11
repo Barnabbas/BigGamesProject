@@ -24,28 +24,24 @@ import scala.collection.mutable.HashMap
  * Constructs a new ResourceLoader that will load {@code res} to all 
  * clients that are added to this ResourceLoader
  */
-private[networking] class ResourceLoader(res: List[Resource]){
+private[networking] class ResourceNetworker(loader: ResourceLoader){
     
     private val debug = new Debug("ResourceLoader")
-    debug("Getting resources " + res)
+    debug("Getting resources " + loader)
     
-    /**
-     * A Map from identifier to the resource
-     */
-    private val resources = res.map(r => (r.identifier -> r)).toMap
     
     /**
      * The resources in order to send
      */
-    private val orderedResources = topologicalSort(resources)
+    private val resources = loader.requiredResources
     
     /**
      * The data to send (in order)
      */
     private val sendData = {
-        for (res <- orderedResources) yield res match{
+        for (res <- resources) yield res match{
             case vObj: ViewObject => NetworkViewObject(vObj)
-            case vDef: ViewDefinition => new ResourceLoader.AppViewDefinition(vDef)
+            case vDef: ViewDefinition => new ResourceNetworker.AppViewDefinition(vDef)
             case red => res
          }
     }
@@ -90,7 +86,7 @@ private[networking] class ResourceLoader(res: List[Resource]){
     
 }
 
-object ResourceLoader {
+object ResourceNetworker {
     
     /**
      * temporary class to get a ViewDefinition implementation

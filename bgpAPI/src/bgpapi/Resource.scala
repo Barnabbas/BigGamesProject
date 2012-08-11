@@ -20,9 +20,9 @@ trait Resource extends Immutable {
     val identifier: String
     
     /**
-     * The identifiers of the Resources this Resource needs.
+     * The Resources this Resource needs in order to run
      */
-    def requirements: List[String]
+    def requirements: Set[Resource]
     
     override def toString = identifier
 }

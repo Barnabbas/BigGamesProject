@@ -33,6 +33,6 @@ trait ViewObject extends Resource {
      */
     def apply(property: Property): Option[PropertyValue]
     
-    override def requirements = List(definition.identifier)
+    override def requirements = Set(definition)
 
 }

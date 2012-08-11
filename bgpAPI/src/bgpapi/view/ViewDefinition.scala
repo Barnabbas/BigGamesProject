@@ -22,5 +22,5 @@ trait ViewDefinition extends Resource with Serializable {
      */
     val variables: Set[Property]
     
-    override def requirements = List.empty
+    override def requirements = Set.empty
 }

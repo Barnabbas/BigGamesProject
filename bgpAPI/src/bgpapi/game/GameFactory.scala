@@ -19,11 +19,6 @@ trait GameFactory {
     val identifier: String
     
     /**
-     * The settings that this GameFactory has.
-     */
-    val settings: List[String]
-    
-    /**
      * Creates a new Game.
      * @param theme the GameTheme to run for the Game
      */

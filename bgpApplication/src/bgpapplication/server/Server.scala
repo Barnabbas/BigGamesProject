@@ -15,6 +15,7 @@ package bgpapplication.server
 import bgpapi.game._
 import bgpapplication.server.networking.Networker
 import bgpapplication.util.Debug
+import java.io.File
 import scala.actors.Actor
 import scala.actors.Reactor
 import scala.actors.remote.RemoteActor
@@ -33,9 +34,7 @@ object Server {
     /**
      * Starts a new Server that will run a Game created by {@code factory}
      */
-    def start(factory: GameFactory) = {
-        
-        debug("Starting " + factory.identifier)
+    def start(gameTheme: File) = {
 
         game = factory.createGame
         

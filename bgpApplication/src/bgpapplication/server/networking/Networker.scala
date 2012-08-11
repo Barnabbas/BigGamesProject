@@ -12,6 +12,7 @@ package bgpapplication.server.networking
 
 import bgpapi.Resource
 import bgpapi.view.View
+import bgpapplication.server.resources.ResourceLoader
 import scala.actors.Actor
 import scala.actors.Reactor
 
@@ -19,10 +20,10 @@ import scala.actors.Reactor
  * Creates a new Networker.<br>
  * This Networker will host a Game that requires {@code resources} to run.
  * 
- * @param resources the Resources to run the Game on.
+ * @param loader the ResourceLoader containing the resources that the client should have
  * @param playersReactor a Reactor where all new players will be send to.
  */
-class Networker(resources: List[Resource], playersReactor: Reactor[String]) extends Actor {
+class Networker(loader: ResourceLoader, playersReactor: Reactor[String]) extends Actor {
     
     
     /**
@@ -35,7 +36,7 @@ class Networker(resources: List[Resource], playersReactor: Reactor[String]) exte
     /**
      * The ResourceLoader for this Networker.
      */
-    private val loader = new ResourceLoader(resources)
+    private val resNetworker = new ResourceNetworker(loader)
     
     /**
      * All the clients that are registered to this Networker
@@ -54,7 +55,7 @@ class Networker(resources: List[Resource], playersReactor: Reactor[String]) exte
     /**
      * Determines whether the Networker is done loading to all players.
      */
-    def canStart: Boolean = !loader.isBusy
+    def canStart: Boolean = !resNetworker.isBusy
     
     /**
      * Gets the Views of all the Clients.<br>
@@ -75,7 +76,7 @@ class Networker(resources: List[Resource], playersReactor: Reactor[String]) exte
                           clients ::= client
                           
                           client ! Accept
-                          loader.addClient(client)
+                          resNetworker.addClient(client)
                           playersReactor ! name
                       } else {
                           sender ! Deny("Server is not allowing players at the moment")
