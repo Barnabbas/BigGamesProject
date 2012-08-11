@@ -58,14 +58,14 @@ class ResourceLoader(file: File) {
      * The FactoryData of the GameTheme
      */
     private[resources] val factory = {
-        val id = (themeNode \ "game").text
+        val id = (themeNode \ "@game").text
         reader.get[FactoryData](id)
     }
     
     /**
      * Gets all the Resources used in {@code theme} in order such that for all
      * Resources in the list all the requirements of that Resource are before them
-     * in the List.
+     * in the List. The Theme self is not included in the requiredResources
      */
     def requiredResources: List[Resource] = {
         var list = List.empty[Resource]
@@ -79,6 +79,10 @@ class ResourceLoader(file: File) {
         
         scan(theme)
         
+        // dropping the theme (has to be the last one, since it is added first)
+        list = list.dropRight(1)
+        
+        // removing all duplicate items, such that the first appearance of it stays
         return list.distinct
     }
 

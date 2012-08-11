@@ -18,12 +18,14 @@ import bgpapi.view.PropertyValue
 import bgpapi.view.ViewDefinition
 import bgpapi.view.ViewObject
 import bgpapplication.ViewTypes
+import bgpapplication.util.Debug
 import bgpapplication.util.implementations._
 import java.io.File
 import java.io.FilenameFilter
 import scala.xml._
 import scala.xml.XML._
 import XMLReader._
+import DataReader.FormatException
 
 /**
  * An XMLReader that can read all Resources that can be found in the xml-find
@@ -44,6 +46,7 @@ private[resources] class XMLReader(directory: File) extends DataReader {
      * Gets an Object based on id
      */
     override def get[T <: Resource](id: String): T = {
+        debug("getting " + id)
         if (loadedResources contains id){
             val res = loadedResources(id)
             // todo: add something like T.toString
@@ -65,12 +68,12 @@ private[resources] class XMLReader(directory: File) extends DataReader {
             case "viewdefinition" => getViewDefinition(node)
             case "game" => getFactoryData(node)
             case "gametheme" => getGameTheme(node)
-            case s => throw new DataReader.FormatException("unknow type found: " + s
+            case s => throw new FormatException("unknow type found: " + s
                 + "\n at " + node)
         }
         
         if (res.isInstanceOf[T]) res.asInstanceOf[T]
-        else throw new DataReader.FormatException("Can not be casted to the requested type:" +
+        else throw new FormatException("Can not be casted to the requested type:" +
         "\n" + node)
     }
     
@@ -81,10 +84,16 @@ private[resources] class XMLReader(directory: File) extends DataReader {
     
     private def getViewObject(node: NodeSeq): ViewObject = {
         val id = node.id
+        
+        // todo: remove debug
+        debug("ViewObject: definition = " + (node \@ "definition") + " in node: \n" + node)
+        
         val viewDef = get[ViewDefinition](node \@ "definition")
         val vType = ViewTypes(node \ "type" text)
         val values = (for (prop <- vType.properties) yield{
-                (prop -> getPropertyValue(node \ prop.toString toNode))
+                val propNode = node \ (prop.stringValue)
+                require(!propNode.isEmpty, "No value found for " + prop)
+                (prop -> getPropertyValue(propNode.toNode))
             }).toMap[Property, PropertyValue]
         return new SimpleViewObject(id, viewDef, vType, values)
     }
@@ -111,9 +120,9 @@ private[resources] class XMLReader(directory: File) extends DataReader {
     
     private def getGameTheme(node: Node): GameTheme = {
         val id = node.id
-        val factory = get[FactoryData](node \ "game" text)
+        val factory = get[FactoryData](node \@ "game")
         val values = for (setting <- factory.settings) yield {
-            (setting -> getViewObject(node \ setting))
+            (setting -> get[ViewObject](node.\(setting).child1))
         }
         return new SimpleGameTheme(id, values.toMap)
     }
@@ -122,7 +131,7 @@ private[resources] class XMLReader(directory: File) extends DataReader {
      * Getting the propertyValue (just getting the text at the moment
      */
     private def getPropertyValue(node: Node) = {
-        PropertyValue.Data(node.child1 text)
+        PropertyValue.Data(node.child text)
     }
     
     
@@ -139,6 +148,7 @@ private[resources] class XMLReader(directory: File) extends DataReader {
         
         var map = Map.empty[String, Node]
         for (file <- xmlFiles){
+            debug("Loading now: " + file)
             val xml = loadFile(file)
             
             def add(xml: Node) = {
@@ -146,6 +156,7 @@ private[resources] class XMLReader(directory: File) extends DataReader {
                 formatRequire(!map.contains(id), "This id already exists", xml)
                 
                 map += (id -> xml)
+                debug("adding " + id + " with xml: \n" + xml)
             }
             
             // loading the data
@@ -155,12 +166,15 @@ private[resources] class XMLReader(directory: File) extends DataReader {
             }
         }
         
+        debug("The map for the nodes contains now: " + map.keySet)
         return map
     }
     
 }
 
 private object XMLReader{
+    
+    val debug = new Debug("XMLReader")
     
     def formatRequire(bool: Boolean, message: String, node: NodeSeq){
         if (!bool){
@@ -203,7 +217,7 @@ private class RichNode(node: NodeSeq){
      * This requires that this is a Node with only one child.
      */
     def child1 = {
-        val children = toNode.child
+        val children = toNode.child filterNot (c => c.isInstanceOf[Text])
         formatRequire(children.length == 1, "Only one child is allowed here", node)
         children(0)
     }

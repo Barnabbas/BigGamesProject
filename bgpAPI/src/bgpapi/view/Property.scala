@@ -26,6 +26,11 @@ final class Property private[view] (val name: Symbol) extends Serializable {
     override def hashCode = name.hashCode
     
     override def toString = name.toString
+    
+    /**
+     * The name of this Property as String
+     */
+    def stringValue = name.name
 
 }
 
