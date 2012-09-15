@@ -70,17 +70,24 @@ object Message{
         
         /**
          * message used to inform the client that a new ViewEntity should be added
-         * @param id the new id for this Entity.
-         * @param objectID the identifier for a viewObject that should be used
-         * for the new entity.
+         * @param id the id of the Entity to add
          */
-        case class Add(id: Int, objectID: String) extends Message
+        case class Add(id: Int) extends Message
 
         /**
          * message used to inform the client that a new ViewEntity should be removed
          * @param id the ID of the Entity to remove
          */
         case class Remove(id: Int) extends Message
+        
+        /**
+         * Message indicating that a new Entity has to be created with the given
+         * variables set at start.
+         * @param id the identifier for this new Entity
+         * @param objectID the identifier of the Object this Entity is build on
+         * @param variables the values of the variables to start with
+         */
+        case class Create(id: Int, objectID: String, variables: Map[Property, Any]) extends Message
 
         /**
          * message indicating that a property of a ViewEntity should be changed.

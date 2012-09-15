@@ -73,7 +73,7 @@ object Renderer {
         import PropertyValue._
         viewObject(property).get match {
             case Data(data) => data
-            case Variable(variable) => viewEntity(variable)
+            case Variable(variable) => viewEntity(variable).get
         }
     }
     

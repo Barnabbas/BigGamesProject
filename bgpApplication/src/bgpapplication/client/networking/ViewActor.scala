@@ -28,17 +28,22 @@ private[networking] class ViewActor(view: ClientView, server: AbstractActor) ext
         
         loop {
             receive{
-                case Add(id, obj) => {
-                        debug("new object added: " + obj)
-                        val entity = new Entity(ResourceManager.getObject(obj))
+                case Create(id, obj, vars) => {
+                        debug("new Entity created: " + obj + "/ id: " + id)
+                        
+                        val entity = new Entity(ResourceManager.getObject(obj), vars)
                         entities += (id -> entity)
+                }
+                case Add(id) => {
+                        debug("Adding entity with id " + id)
+                        
+                        val entity = entities(id)
                         view.add(entity)
                 }
                     
                 case Remove(id) => {
                         val entity = entities(id)
                         view.remove(entity)
-                        entities -= id
                 }
                 case Change(id, prop, value) => {
                         val entity = entities(id)

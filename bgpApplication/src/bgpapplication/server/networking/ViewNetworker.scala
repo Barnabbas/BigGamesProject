@@ -11,6 +11,7 @@ package bgpapplication.server.networking
 import bgpapi.view._
 import bgpapplication.networking.Message
 import bgpapplication.networking.Message.view._
+import bgpapplication.util.Debug
 import scala.actors.Actor
 import scala.collection.mutable.HashMap
 import Client._
@@ -20,26 +21,53 @@ import Client._
  */
 private[networking] class ViewNetworker(clients: List[Client]) extends View {
     
+    /**
+     * A broadcaster used to send messages (such that we can send FIFO, I hope).
+     * Don't know if this one can still get blocked...
+     */
+    private val broadcaster = new Actor(){
+        override def act() = react{
+            case m: Message => {
+                    clients.foreach(c => c ! m)
+                    debug("Broadcasting " + m)
+                    act()
+                }
+            case x => 
+                throw new IllegalArgumentException("Broadcaster found unknow message: " + x)
+        }
+    }.start()
+    
     // telling all clients to start
-    Actor.actor(clients.foreach(c => c ! Message.StartGame))
+    broadcast(Message.StartGame)
+    
+    /**
+     * A debugger used for testing (can better be placed in the companion object...)
+     */
+    private val debug = new Debug("ViewNetworker")
     
     /**
      * The entities that are created by this class
      */
     private var entities = new HashMap[ViewEntity, Int]
     
-    override def add(viewObject: ViewObject): ViewEntity = {
-        val entity = new ServerViewEntity(viewObject)
+    override def createEntity(viewObject: ViewObject, variables: (Property, Any)*): ViewEntity = {
+        val varMap = variables.toMap
+        val entity = new ServerViewEntity(viewObject, varMap)
         val id = genEntityID()
         synchronized{entities += (entity -> id)}
-        broadcast(Add(id, viewObject.identifier))
+        
+        broadcast(Create(id, viewObject.identifier, varMap))
         
         return entity
     }
     
+    override def add(viewEntity: ViewEntity) = {
+        val id = entities(viewEntity)
+        broadcast(Add(id))
+    }
+    
     override def remove(viewEntity: ViewEntity) = {
         val id = entities(viewEntity)
-        synchronized{entities -= viewEntity}
         broadcast(Remove(id))
     }
     
@@ -48,20 +76,17 @@ private[networking] class ViewNetworker(clients: List[Client]) extends View {
      * all clients. This will not modify {@code viewEntity} itself
      */
     private def updateEntity(viewEntity: ViewEntity,
-                                            prop: Property, value: Any) {
+                             prop: Property, value: Any) {
         val id = entities(viewEntity)
         broadcast(Change(id, prop, value))
     }
+    
     
     /**
      * Sends {@code message} to all Actors
      */
     private def broadcast(message: Message) = {
-        Actor.actor{
-            for (client <- clients){
-                client ! message
-            }
-        }
+        broadcaster ! message
     }
     
     private var id = Integer.MIN_VALUE
@@ -80,7 +105,8 @@ private[networking] class ViewNetworker(clients: List[Client]) extends View {
     /**
      * The ViewEntity implementation for the Server
      */
-    private class ServerViewEntity(viewObject: ViewObject) extends ViewEntity(viewObject: ViewObject) {
+    private class ServerViewEntity(viewObject: ViewObject, vars: Map[Property, Any])
+    extends ViewEntity(viewObject: ViewObject, vars) {
         override def onUpdate(p: Property, v: Any) = updateEntity(this, p, v)
     }
 

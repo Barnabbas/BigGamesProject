@@ -5,7 +5,7 @@
 
 package bgpapi.view
 
-import scala.collection.mutable.Map
+import scala.collection.mutable.HashMap
 
 // todo: design decisions:
 // - should this be immutable?
@@ -21,13 +21,19 @@ import scala.collection.mutable.Map
 /**
  * A New ViewEntity that can be used to control an instance of {@code viewObject}.
  * @param viewObject the ViewObject this Entity will be an instance of
+ * @param initVariables the values for the variables to start with
+ * @throws IllegalArgumentException if {@code initVariables} is not defined for
+ * all variables required by {@code viewObject}.
  */
-class ViewEntity(viewObject: ViewObject) {
+class ViewEntity(viewObject: ViewObject, initVariables: Map[Property, Any]) {
+    
+    // checking for valid variables
+    checkVariables();
     
     /**
      * A Map between the properties and the values
      */
-    private final val values = Map.empty[Property, Any]
+    private val values = new HashMap ++ initVariables
     
     /**
      * Gets the value of property {@code p} or gets nothing when it is not set
@@ -58,6 +64,22 @@ class ViewEntity(viewObject: ViewObject) {
      */
     protected def onUpdate(p: Property, v: Any) = {
         // to override
+    }
+    
+    /**
+     * Checks if all variables of the ViewObject has been set.<br>
+     * Checked using the ViewDefinition currently.
+     * This will throw a IllegalArgumentException when not all variables are available
+     * @throws IllegalArgumentException if not all the required variables are included
+     */
+    private def checkVariables() = {
+        val isComplete = {
+            viewObject.definition.variables.forall{v =>
+                initVariables.isDefinedAt(v)
+            }
+        }
+        require(isComplete, "Not all variables are set in " + viewObject + 
+                "\nmissing: " + (viewObject.definition.variables &~ initVariables.keySet))
     }
     
 }

@@ -15,6 +15,7 @@ import javax.swing.border.Border
 import javax.swing.border.LineBorder
 import javax.swing.filechooser.FileFilter
 import scala.swing._
+import scala.swing.Swing._
 
 object ControllerFrame extends SimpleSwingApplication {
     
@@ -22,8 +23,7 @@ object ControllerFrame extends SimpleSwingApplication {
     
     override def top = new MainFrame{
         title = "BigGamesProject!!!!!"
-        
-        
+        preferredSize = 400 -> 150
         
         /**
          * The Panel used for the Controller

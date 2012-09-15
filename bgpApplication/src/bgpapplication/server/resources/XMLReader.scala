@@ -69,12 +69,12 @@ private[resources] class XMLReader(directory: File) extends DataReader {
             case "game" => getFactoryData(node)
             case "gametheme" => getGameTheme(node)
             case s => throw new FormatException("unknow type found: " + s
-                + "\n at " + node)
+                                                + "\n at " + node)
         }
         
         if (res.isInstanceOf[T]) res.asInstanceOf[T]
         else throw new FormatException("Can not be casted to the requested type:" +
-        "\n" + node)
+                                       "\n" + node)
     }
     
     private def getLink[T <: Resource](node: Node): T = {
@@ -90,11 +90,34 @@ private[resources] class XMLReader(directory: File) extends DataReader {
         
         val viewDef = get[ViewDefinition](node \@ "definition")
         val vType = ViewTypes(node \ "type" text)
+        
+        /**
+         * Gets a PropertyValue from a node
+         */
+        def getPropertyValue(node: NodeSeq): PropertyValue = {
+            val variable = node \ "variable"
+                
+            if (!variable.isEmpty){ // there is a variable
+                // the property of the variable
+                val prop = Property(variable \@ "var")
+                formatRequire(viewDef.variables(prop), 
+                              prop + " is not defined in the viewDefinition " + viewDef.identifier,
+                              node)
+                return PropertyValue.Variable(prop)
+            } else { // there is no variable (just take raw data)
+                return PropertyValue.Data(node.text)
+            }
+        }
+            
         val values = (for (prop <- vType.properties) yield{
                 val propNode = node \ (prop.stringValue)
                 require(!propNode.isEmpty, "No value found for " + prop)
-                (prop -> getPropertyValue(propNode.toNode))
+                (prop -> getPropertyValue(propNode))
             }).toMap[Property, PropertyValue]
+        
+        debug("Getting the following values: " + values);
+        debug("From: " + node)
+        
         return new SimpleViewObject(id, viewDef, vType, values)
     }
     
@@ -112,8 +135,8 @@ private[resources] class XMLReader(directory: File) extends DataReader {
         val clazz = factoryNode \@ "class"
         
         val settings = (for (setting <- node \ "setting") yield {
-            setting.id
-        }).toList
+                setting.id
+            }).toList
     
         return new FactoryData(id, file, clazz, settings)
     }
@@ -125,13 +148,6 @@ private[resources] class XMLReader(directory: File) extends DataReader {
             (setting -> get[ViewObject](node.\(setting).child1))
         }
         return new SimpleGameTheme(id, values.toMap)
-    }
-    
-    /**
-     * Getting the propertyValue (just getting the text at the moment
-     */
-    private def getPropertyValue(node: Node) = {
-        PropertyValue.Data(node.child text)
     }
     
     
