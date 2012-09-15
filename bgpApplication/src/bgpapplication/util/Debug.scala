@@ -9,7 +9,9 @@ package bgpapplication.util
  * A class that can be used for debugging.<br>
  * Will only print when isDebugging is set.
  */
-class Debug(name: String) {
+import scala.collection.GenSet
+
+class Debug private(private val name: String) {
     
     def debug(body: => Unit) = {
         if (isDebugging){
@@ -25,7 +27,7 @@ class Debug(name: String) {
     
     def apply(line: => String) = print(line)
     
-    private def isDebugging = Debug.isDebugging && Debug.debuggers.contains(name)
+    private def isDebugging = Debug.isDebugging && Debug.active.contains(name)
 }
 
 /**
@@ -35,10 +37,28 @@ object Debug {
     
     var isDebugging = false
     
+    
     /**
-     * The debuggers that are allowed
+     * All the Debuggers
      */
-    var debuggers = List("ResourceLoader", "ResourceManager", "Networker(Client)")
+    private var debuggers = List.empty[Debug]
+    
+    def apply(name: String) = {
+        val debug = new Debug(name)
+        debuggers ::= debug
+        debug
+    }
+    
+    /**
+     * The debuggers that are active
+     */
+    var active = List.empty[String]
+    
+    /**
+     * The debuggers that are not active
+     */
+    def passive = debuggers.map(d => d.name) diff active
+    
     
     /**
      * Will run {@code body} when {@code isDebuggin}

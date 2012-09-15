@@ -24,7 +24,7 @@ import scala.swing.Panel
  */
 class ClientView {
     
-    private val debug = new Debug("ClientView")
+    private val debug = Debug("ClientView")
     
     private val entities = new HashSet[Entity]
     

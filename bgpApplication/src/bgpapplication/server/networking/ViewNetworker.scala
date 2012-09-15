@@ -43,7 +43,7 @@ private[networking] class ViewNetworker(clients: List[Client]) extends View {
     /**
      * A debugger used for testing (can better be placed in the companion object...)
      */
-    private val debug = new Debug("ViewNetworker")
+    private val debug = Debug("ViewNetworker")
     
     /**
      * The entities that are created by this class

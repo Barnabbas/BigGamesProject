@@ -26,7 +26,7 @@ import Client._
  */
 private[networking] class ResourceNetworker(loader: ResourceLoader){
     
-    private val debug = new Debug("ResourceLoader")
+    private val debug = Debug("ResourceLoader")
     debug("Getting resources " + loader)
     
     

@@ -29,7 +29,7 @@ trait Renderer {
 
 object Renderer {
     
-    private val debug = new Debug("Renderer")
+    private val debug = Debug("Renderer")
     
     private val renderers = Map(new ViewType('text, List('text)) -> TextRenderer)
     debug("Renderers for: " + renderers.keySet)

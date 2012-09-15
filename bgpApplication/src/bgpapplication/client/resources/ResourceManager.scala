@@ -20,7 +20,7 @@ import bgpapplication.util.Debug
 
 object ResourceManager {
     
-    private val debug = new Debug("ResourceManager")
+    private val debug = Debug("ResourceManager")
     
     private var objects = Map.empty[String, ViewObject]
     private var definitions = Map.empty[String, ViewDefinition]

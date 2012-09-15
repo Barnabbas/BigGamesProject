@@ -190,7 +190,7 @@ private[resources] class XMLReader(directory: File) extends DataReader {
 
 private object XMLReader{
     
-    val debug = new Debug("XMLReader")
+    val debug = Debug("XMLReader")
     
     def formatRequire(bool: Boolean, message: String, node: NodeSeq){
         if (!bool){

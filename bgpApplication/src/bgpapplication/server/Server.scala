@@ -26,7 +26,7 @@ import scala.actors.remote.RemoteActor
 
 object Server {
     
-    private val debug = new Debug("Server")
+    private val debug = Debug("Server")
     
     private var networker: Networker = _
     

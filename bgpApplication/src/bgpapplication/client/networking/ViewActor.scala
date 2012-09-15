@@ -19,7 +19,7 @@ import scala.collection.mutable.HashMap
  */
 private[networking] class ViewActor(view: ClientView, server: AbstractActor) extends Actor {
     
-    val debug = new Debug("ViewActor")
+    val debug = Debug("ViewActor")
     
     val entities = new HashMap[Int, Entity]
     

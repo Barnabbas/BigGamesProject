@@ -129,6 +129,6 @@ object Networker{
         System.err.println("Getting unknown message: " + m)
     }
     
-    private[networking] val debug = new Debug("Networker(Client)")
+    private[networking] val debug = Debug("Networker(Client)")
     
 }

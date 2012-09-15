@@ -11,19 +11,22 @@ import bgpapplication.server.resources.ResourceLoader
 import bgpapplication.util.Debug
 import java.awt.Color
 import java.io.File
-import javax.swing.border.Border
 import javax.swing.border.LineBorder
 import javax.swing.filechooser.FileFilter
 import scala.swing._
 import scala.swing.Swing._
+import scala.swing.event.Event
+import scala.swing.event.FocusGained
+import scala.swing.event.MousePressed
 
 object ControllerFrame extends SimpleSwingApplication {
     
-    val debug = new Debug("ControllerFrame")
+    val debug = Debug("ControllerFrame")
     
     override def top = new MainFrame{
         title = "BigGamesProject!!!!!"
-        preferredSize = 400 -> 150
+        preferredSize = 400 -> 200
+        location = 100 -> 100
         
         /**
          * The Panel used for the Controller
@@ -98,10 +101,41 @@ object ControllerFrame extends SimpleSwingApplication {
                 }
             }
             
-            val list = new ListView(Debug.debuggers)
+            // the list with the enabled debuggers
+            val list = new ListView[String]
             
+            // modifying the list
             
-            new FlowPanel(debugButton, list)
+            val addComboBox: ComboBox[String] = new ComboBox(List.empty[String]){
+                makeEditable()
+            }
+            
+            /** updates {@code list} and {@code addComboBox.
+             * Have to be called when the list is modified */
+            def update() = {
+                list.listData = Debug.active
+                addComboBox.peer.setModel(ComboBox.newConstantModel("" :: Debug.passive))
+            }
+            
+            val removeItem = new Action("Remove debugger"){
+                override def enabled = !list.selection.items.isEmpty
+                override def apply() = {
+                    val selected = list.selection.items
+                    Debug.active = Debug.active diff selected
+                    update()
+                }
+            }
+            
+            val addItem = Action("Add debugger"){
+                val selected = addComboBox.selection.item
+                Debug.active ::= selected
+                update()
+            }
+            
+            val updateAction = Action("refresh"){update()}
+            
+            new FlowPanel(debugButton, list, new Button(removeItem),
+                          addComboBox, new Button(addItem), new Button(updateAction))
         }
         
         val tabs = new TabbedPane{

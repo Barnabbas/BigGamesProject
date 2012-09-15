@@ -17,7 +17,7 @@ import java.util.Scanner
 
 object GameLoader {
     
-    private val debug = new Debug("GameLoader")
+    private val debug = Debug("GameLoader")
     
     /**
      * Creates a Game based on the Data and the Theme found in {@code resourceLoader}
