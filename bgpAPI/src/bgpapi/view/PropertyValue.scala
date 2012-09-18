@@ -10,7 +10,7 @@ package bgpapi.view
  * at the ViewObject classes.<br>
  * A Property Value can either be the data for the value or a pointer to a variable.
  */
-sealed trait PropertyValue extends Serializable
+sealed trait PropertyValue[T] extends Serializable
 
 object PropertyValue{
     
@@ -18,11 +18,11 @@ object PropertyValue{
      * A PropertyValue containing raw Data.
      * The value is immediatly the Data.
      */
-    case class Data(data: Any) extends PropertyValue
+    case class Data[T](data: T) extends PropertyValue[T]
     
     /**
      * A PropertyValue pointing to a variable.
      * The value is found in the Entity at the property {@code variable}.
      */
-    case class Variable(variable: Property) extends PropertyValue
+    case class Variable[T](variable: Property[T]) extends PropertyValue[T]
 }

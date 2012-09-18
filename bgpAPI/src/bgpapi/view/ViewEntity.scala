@@ -25,7 +25,7 @@ import scala.collection.mutable.HashMap
  * @throws IllegalArgumentException if {@code initVariables} is not defined for
  * all variables required by {@code viewObject}.
  */
-class ViewEntity(viewObject: ViewObject, initVariables: Map[Property, Any]) {
+class ViewEntity(viewObject: ViewObject, initVariables: Map[Property[_ <: Any], Any]) {
     
     // checking for valid variables
     checkVariables();
@@ -36,10 +36,12 @@ class ViewEntity(viewObject: ViewObject, initVariables: Map[Property, Any]) {
     private val values = new HashMap ++ initVariables
     
     /**
-     * Gets the value of property {@code p} or gets nothing when it is not set
+     * Gets the value of property {@code p}
      * @param p the Property to get the value of
+     * 
+     * @throws NoSuchElementException if there is no value for {@code property}
      */
-    final def apply(p: Property) = values.get(p)
+    final def apply[T](p: Property[T]): T = values(p) asInstanceOf
     
     /**
      * Sets the value of {@code p} to {@code v}.<br>
@@ -47,7 +49,7 @@ class ViewEntity(viewObject: ViewObject, initVariables: Map[Property, Any]) {
      * @param p the Property to set the value of
      * @param v the new value
      */
-    final def update(p: Property, v: Any) = {
+    final def update[T](p: Property[T], v: T) = {
         require(properties(p), "This Entity got no " + p + " property")
         values(p) = v
         onUpdate(p, v)
@@ -62,7 +64,7 @@ class ViewEntity(viewObject: ViewObject, initVariables: Map[Property, Any]) {
      * Will be called when a property value got changed.<br>
      * Can be overriden to be notified when this ViewEntity is updated
      */
-    protected def onUpdate(p: Property, v: Any) = {
+    protected def onUpdate[T](p: Property[T], v: T) = {
         // to override
     }
     

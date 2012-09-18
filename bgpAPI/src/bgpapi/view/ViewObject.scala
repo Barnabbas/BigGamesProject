@@ -28,10 +28,10 @@ trait ViewObject extends Resource {
     
     
     /**
-     * Gets the value of the Property {@code property} or an empty option if 
-     * this ViewObject does not have this Property.
+     * Gets the value of the Property {@code property}.
+     * @throws NoSuchElementException if there is no value for {@code property}
      */
-    def apply(property: Property): Option[PropertyValue]
+    def apply[T](property: Property[T]): T
     
     override def requirements = Set(definition)
 

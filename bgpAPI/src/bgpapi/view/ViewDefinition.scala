@@ -20,7 +20,7 @@ trait ViewDefinition extends Resource with Serializable {
      * Currently the Property class is used for this. But this may change when 
      * the variables get more functionality.
      */
-    val variables: Set[Property]
+    val variables: Set[Property[_ <: Any]]
     
     override def requirements = Set.empty
 }

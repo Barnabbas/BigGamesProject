@@ -24,7 +24,7 @@ trait View {
      * has been set in {@code variables}
      */
     @throws(classOf[IllegalArgumentException])
-    def createEntity(viewObject: ViewObject, variables: (Property, Any)*): ViewEntity
+    def createEntity(viewObject: ViewObject, variables: PropertyTuple[_ <: Any]*): ViewEntity
     
     /**
      * Adds {@code viewEntity} to this View.<br>

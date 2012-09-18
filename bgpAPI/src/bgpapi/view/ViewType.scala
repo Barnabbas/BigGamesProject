@@ -11,10 +11,12 @@ package bgpapi.view
  * ViewEntity.
  */
 
-final class ViewType (private val name: Symbol, val properties: List[Property])
-        extends Serializable{    
-    override def toString = name.toString
-    override def hashCode = name.hashCode
-    override def equals (a: Any) = 
-        a.isInstanceOf[ViewType] && a.asInstanceOf[ViewType].name == name
+final class ViewType (private val name: Symbol, val properties: List[Property[_ <: Any]])
+extends Serializable{    
+  override def toString = name.toString
+  override def hashCode = name.hashCode
+  override def equals (a: Any) = a match {
+    case vt: ViewType => name == vt.name && properties == vt.properties
+    case _ => false
+  }
 }
