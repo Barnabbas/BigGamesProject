@@ -5,6 +5,7 @@
 
 package bgpapi.view
 
+import bgpapi.util.view.PropertyMap
 import scala.collection.mutable.HashMap
 
 // todo: design decisions:
@@ -25,7 +26,7 @@ import scala.collection.mutable.HashMap
  * @throws IllegalArgumentException if {@code initVariables} is not defined for
  * all variables required by {@code viewObject}.
  */
-class ViewEntity(viewObject: ViewObject, initVariables: Map[Property[_ <: Any], Any]) {
+class ViewEntity(viewObject: ViewObject, initVariables: PropertyMap) {
     
     // checking for valid variables
     checkVariables();
@@ -33,7 +34,7 @@ class ViewEntity(viewObject: ViewObject, initVariables: Map[Property[_ <: Any], 
     /**
      * A Map between the properties and the values
      */
-    private val values = new HashMap ++ initVariables
+    private var values = initVariables
     
     /**
      * Gets the value of property {@code p}
@@ -51,7 +52,7 @@ class ViewEntity(viewObject: ViewObject, initVariables: Map[Property[_ <: Any], 
      */
     final def update[T](p: Property[T], v: T) = {
         require(properties(p), "This Entity got no " + p + " property")
-        values(p) = v
+        values += p -> v
         onUpdate(p, v)
     }
     

@@ -9,6 +9,8 @@ package bgpapi.view
  * A View is a collection of ViewObjects and can be used to decide what should 
  * be shown in a view.
  */
+import bgpapi.view.Property.PropertyTuple
+
 trait View {
     
     /**

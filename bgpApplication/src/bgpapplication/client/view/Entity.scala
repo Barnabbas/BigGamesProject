@@ -16,7 +16,7 @@ import bgpapi.view._
  * @param viewObject how this Entity should be displayed
  * @param ViewEntity additional properties that can be set during run-time
  */
-class Entity(viewObject: ViewObject, variables: Map[Property, Any]) {
+class Entity(viewObject: ViewObject, variables: PropertyMap) {
     
     /**
      * the ViewEntity containing the properties for this Entity

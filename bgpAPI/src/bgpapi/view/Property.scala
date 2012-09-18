@@ -15,7 +15,7 @@ package bgpapi.view
  *  @param name the name of this proeprty 
  */
 final class Property[T] (val name: Symbol)
-extends Serializable {
+    extends Serializable {
     
   private[view] def this(name: String) = this(Symbol(name))
     
@@ -26,4 +26,12 @@ extends Serializable {
    */
   def stringValue = name.name
 
+}
+
+object Property{
+  /**
+   * A PropertyTupe is a Tuple such that the type of the property is the type 
+   * of the value.
+   */
+  type PropertyTuple[T] = (Property[T], T)
 }

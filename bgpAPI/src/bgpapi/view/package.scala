@@ -23,12 +23,9 @@ package bgpapi
  */
 package object view {
     
-  /**
-   * A ProeprtyTupe is a Tuple such that the type of the property is the type 
-   * of the value.
-   */
-  type PropertyTuple[T] = (Property[T], T)
+  import Property._
   
   implicit def tuple2PropertyTuple[T](t: (Property[T], T)): PropertyTuple[T] = t
+  implicit def propertyTuple2Tuple[T](p: PropertyTuple[T]): (Property[T], T) = (p._1, p._2)
 
 }
