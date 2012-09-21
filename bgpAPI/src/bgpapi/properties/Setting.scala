@@ -1,4 +1,4 @@
-package properties
+package bgpapi.properties
 
 /**
  * A Setting is a Property that points to a SettingValue.

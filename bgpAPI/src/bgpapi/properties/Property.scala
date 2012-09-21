@@ -1,4 +1,4 @@
-package properties
+package bgpapi.properties
 
 /**
  * A Property is a pointer to a value.<br>

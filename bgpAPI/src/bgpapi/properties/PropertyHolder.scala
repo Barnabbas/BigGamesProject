@@ -1,4 +1,4 @@
-package properties
+package bgpapi.properties
 
 /**
  * A PropertyHolder is a class that has multiple Property with values.

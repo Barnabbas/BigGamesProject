@@ -1,4 +1,4 @@
-package properties
+package bgpapi.properties
 
 /**
  * A Variable points to some raw data that can still change
@@ -7,7 +7,7 @@ package properties
 class Variable[T](name: String) extends Property[T](name)
 
 /**
- * The additional classes to work with Setting.
+ * The additional classes to work with Variable.
  */
 object Variable {
 

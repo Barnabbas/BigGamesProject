@@ -1,4 +1,6 @@
 
+package bgpapi
+
 /**
  * This package contains classes to define and work with properties.
  *

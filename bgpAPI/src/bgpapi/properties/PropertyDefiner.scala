@@ -1,4 +1,4 @@
-package properties
+package bgpapi.properties
 
 /**
  * This defines the properties for a certain PropertyHolder.<br>

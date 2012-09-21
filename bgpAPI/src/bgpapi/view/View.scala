@@ -5,11 +5,12 @@
 
 package bgpapi.view
 
+import bgpapi.properties.Variable
+
 /**
  * A View is a collection of ViewObjects and can be used to decide what should 
  * be shown in a view.
  */
-import bgpapi.view.Property.PropertyTuple
 
 trait View {
     
@@ -26,7 +27,7 @@ trait View {
      * has been set in {@code variables}
      */
     @throws(classOf[IllegalArgumentException])
-    def createEntity(viewObject: ViewObject, variables: PropertyTuple[_ <: Any]*): ViewEntity
+    def createEntity(viewObject: ViewObject, variables: Variable.Tuple[_]*): ViewEntity
     
     /**
      * Adds {@code viewEntity} to this View.<br>

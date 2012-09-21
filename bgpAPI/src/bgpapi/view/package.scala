@@ -21,11 +21,4 @@ package bgpapi
  you have added. The variables that a ViewEntity can control are defined by 
  a ViewDefinition that is owned by each ViewObject.
  */
-package object view {
-    
-  import Property._
-  
-  implicit def tuple2PropertyTuple[T](t: (Property[T], T)): PropertyTuple[T] = t
-  implicit def propertyTuple2Tuple[T](p: PropertyTuple[T]): (Property[T], T) = (p._1, p._2)
-
-}
+package object view

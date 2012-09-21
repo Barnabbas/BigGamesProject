@@ -12,26 +12,16 @@ package bgpapi.view
  */
 
 import bgpapi.Resource
+import bgpapi.properties.PropertyHolder
+import bgpapi.properties.Setting
 
-trait ViewObject extends Resource {
+trait ViewObject extends Resource with PropertyHolder[Setting[_], Setting.Value[_]] {
     
-    /**
-     * The type of this Object. This is used to tell the view how this Object
-     * should be displayed.
-     */
-    val viewType: ViewType
     
     /**
      * The Definition that used to define the variables this ViewObject will have
      */
     def definition: ViewDefinition
-    
-    
-    /**
-     * Gets the value of the Property {@code property}.
-     * @throws NoSuchElementException if there is no value for {@code property}
-     */
-    def apply[T](property: Property[T]): T
     
     override def requirements = Set(definition)
 
