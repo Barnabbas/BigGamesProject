@@ -5,11 +5,11 @@ package bgpapi.properties
  * @author s100866
  *
  */
-trait PropertyHolder[P <: Property[_], V <: Property.Value[_]] {
+trait PropertyHolder[P <: Property, V <: Property.Value] {
 	/**
 	 * Gets the value of property {@code p}
 	 */
-	def apply[T](prop: P): V
+	def apply(prop: P): V
 	
 	/**
 	 * The PropertyDefiner that defines the Properties this PropertyHolder uses.

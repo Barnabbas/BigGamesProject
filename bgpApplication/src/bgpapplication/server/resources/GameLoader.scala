@@ -44,6 +44,7 @@ object GameLoader {
         // get the GameFactory from an scala object
         // warning: strange copied code, I have no idea how this works
         def getObjectFactory(name: String)(implicit man: Manifest[GameFactory]) = {
+            
             val clazz = Class.forName(name, true, classLoader)
             clazz.getField("MODULE$").get(man.erasure).asInstanceOf[GameFactory]
         }

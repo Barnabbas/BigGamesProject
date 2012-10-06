@@ -5,13 +5,8 @@
 
 package bgpapplication.networking
 
-
-/**
- * An Object that will be send over the networking from the client to the server
- */
-import bgpapi.view.Property
-import bgpapi.view.ViewObject
-import scala.actors.Actor
+import bgpapi.properties.Variable
+import bgpapplication.util.PropertyMap._
 
 sealed class Message
 
@@ -87,15 +82,15 @@ object Message{
          * @param objectID the identifier of the Object this Entity is build on
          * @param variables the values of the variables to start with
          */
-        case class Create(id: Int, objectID: String, variables: Map[Property, Any]) extends Message
+        case class Create(id: Int, objectID: String, variables: VariableMap) extends Message
 
         /**
          * message indicating that a property of a ViewEntity should be changed.
-         * @param name the name of the Entity
-         * @param prop the property to change
-         * @param id the ID of the Entity that has to be changed
+         * @param id the identifier of the Entity to change
+         * @param prop the property that should be changed
+         * @param value the new value for the property
          */
-        case class Change(id: Int, prop: Property, value: Any) extends Message
+        case class Change(id: Int, prop: Variable, value: Variable.Value) extends Message
         
         // todo: handles errors like unknow id, or unknow viewObject id
     }

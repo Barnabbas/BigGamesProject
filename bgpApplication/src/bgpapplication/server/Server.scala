@@ -35,7 +35,7 @@ object Server {
     
     /**
      * Starts the server such that it will use the resources from {@code loader}.<br>
-     * It will immediatly create a Game that is based on the data loaded from {@code loader}.
+     * It will immediately create a Game that is based on the data loaded from {@code loader}.
      */
     def start(loader: ResourceLoader) = {
 

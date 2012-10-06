@@ -5,17 +5,16 @@
 
 package bgpapplication.util.implementations
 
-/**
- * The implementation of the ViewObject trait.
- */
-
 import bgpapi.view._
+import bgpapplication.util.PropertyMap._
+import bgpapi.properties.Setting
 
 final class SimpleViewObject(override val identifier: String,
                     viewDef: ViewDefinition,
-                    override val viewType: ViewType,
-                    values: Map[Property, PropertyValue]) extends ViewObject {
+                    viewType: ViewType,
+                    values: SettingMap) extends ViewObject with Serializable {
     
-    override def apply(prop: Property) = values.get(prop)
+    override def apply(setting: Setting) = values(setting)
+    override def definer = viewType
     override def definition = viewDef
 }

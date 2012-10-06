@@ -13,7 +13,7 @@ import bgpapi.properties.Variable
  * It can be used to set and get properties from, such that the View will be changed
  * for this certain entity.
  */
-trait ViewEntity extends PropertyHolder[Variable[_], Variable.Value[_]] {
+trait ViewEntity extends PropertyHolder[Variable, Variable.Value] {
     
     /**
      * Sets the value of {@code p} to {@code v}.<br>
@@ -21,6 +21,6 @@ trait ViewEntity extends PropertyHolder[Variable[_], Variable.Value[_]] {
      * @param p the Property to set the value of
      * @param v the new value
      */
-    def update[T](p: Variable[T], v: Variable.Value[T]): Unit
+    def update(p: Variable, v: Variable.Value): Unit
     
 }

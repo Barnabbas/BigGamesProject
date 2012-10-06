@@ -5,12 +5,15 @@
 
 package bgpapplication.util.implementations
 
-import bgpapi.view.Property
 import bgpapi.view.ViewDefinition
+import bgpapi.properties.Property
+import bgpapi.properties.Variable
 
 /**
  * A simple implementation of the ViewDefinition interface
  */
 
-final class SimpleViewDefinition(override val identifier: String,
-                                 override val variables: Set[Property]) extends ViewDefinition
+class SimpleViewDefinition(override val identifier: String,
+                                 variables: Set[Variable]) extends ViewDefinition with Serializable{
+  override def properties = variables
+}

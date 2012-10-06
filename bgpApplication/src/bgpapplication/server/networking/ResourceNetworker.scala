@@ -8,7 +8,6 @@ package bgpapplication.server.networking
 import bgpapi.Resource
 import bgpapi.view.ViewDefinition
 import bgpapi.view.ViewObject
-import bgpapplication.networking.NetworkViewObject
 import bgpapplication.server.resources.ResourceLoader
 import bgpapplication.util.Debug
 import scala.actors.Actor
@@ -38,13 +37,7 @@ private[networking] class ResourceNetworker(loader: ResourceLoader){
     /**
      * The data to send (in order)
      */
-    private val sendData = {
-        for (res <- resources) yield res match{
-            case vObj: ViewObject => NetworkViewObject(vObj)
-            case vDef: ViewDefinition => new ResourceNetworker.AppViewDefinition(vDef)
-            case red => res
-         }
-    }
+    private val sendData = resources
     
     debug("Will be sending: " + sendData)
     
@@ -84,15 +77,4 @@ private[networking] class ResourceNetworker(loader: ResourceLoader){
                 resources.values.filter(r => r.isInstanceOf[ViewObject])
     }
     
-}
-
-object ResourceNetworker {
-    
-    /**
-     * temporary class to get a ViewDefinition implementation
-     */
-    private class AppViewDefinition(definition: ViewDefinition) extends ViewDefinition {
-        override val identifier = definition.identifier
-        override val variables = definition.variables
-    }
 }

@@ -14,19 +14,15 @@ import bgpapi.properties.Setting
  * ViewEntity.
  */
 
-final class ViewType(private val name: Symbol, private val settings: Set[Setting[_ <: Any]])
-		extends Serializable with PropertyDefiner[Setting[_]] {
-	
-	/** A Map between the names of the settings to the settings themself */
-	private val setMap = settings.map(s => s.name -> s).toMap[String, Setting[_]]
-	
-	override def property(name: String) = setMap(name)
-	override def properties = settings
+class ViewType(private val name: Symbol, private val settings: Set[Setting])
+extends Serializable with PropertyDefiner[Setting] {
+  
+  override def properties = settings
 
-	override def toString = name.toString
-	override def hashCode = name.hashCode
-	override def equals(a: Any) = a match {
-		case vt: ViewType => name == vt.name && settings == vt.settings
-		case _ => false
-	}
+  override def toString = name.toString
+  override def hashCode = name.hashCode
+  override def equals(a: Any) = a match {
+    case vt: ViewType => name == vt.name && settings == vt.settings
+    case _ => false
+  }
 }

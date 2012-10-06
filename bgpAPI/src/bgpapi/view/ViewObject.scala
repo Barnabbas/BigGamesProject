@@ -15,7 +15,7 @@ import bgpapi.Resource
 import bgpapi.properties.PropertyHolder
 import bgpapi.properties.Setting
 
-trait ViewObject extends Resource with PropertyHolder[Setting[_], Setting.Value[_]] {
+trait ViewObject extends Resource with PropertyHolder[Setting, Setting.Value] {
     
     
     /**

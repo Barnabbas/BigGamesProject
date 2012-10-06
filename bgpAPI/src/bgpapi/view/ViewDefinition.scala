@@ -9,7 +9,7 @@ import bgpapi.Resource
 import bgpapi.properties.PropertyDefiner
 import bgpapi.properties.Variable
 
-trait ViewDefinition extends Resource with Serializable with PropertyDefiner[Variable[_]] {
+trait ViewDefinition extends Resource with PropertyDefiner[Variable] {
         
-    override def requirements = Set.empty
+  override def requirements = Set.empty
 }

@@ -10,26 +10,41 @@ package bgpapplication.client.view
  * Entities are used by {@link ClientView} to display everything
  */
 import bgpapi.view._
+import bgpapplication.util.PropertyMap._
+import bgpapplication.util.implementations.SimpleViewEntity
+import bgpapi.properties.Property
+import bgpapi.properties.Setting
 
 /**
  * An Entity that will displayed according to {@code viewObject} and {@code viewEntity}.
  * @param viewObject how this Entity should be displayed
  * @param ViewEntity additional properties that can be set during run-time
  */
-class Entity(viewObject: ViewObject, variables: PropertyMap) {
+class Entity(viewObject: ViewObject, variables: VariableMap) {
     
-    /**
-     * the ViewEntity containing the properties for this Entity
-     */
-    // todo: use real viewEntities
-    val viewEntity = new ViewEntity(viewObject, variables)
+  /**
+   * the ViewEntity containing the properties for this Entity
+   */
+  val viewEntity = new SimpleViewEntity(viewObject, variables)
     
-    /* The renderer that will render this entity */
-    private val renderer = Renderer(viewObject)
-    require(renderer.test(viewEntity), "Can not display the ViewEntity")
+  /* The renderer that will render this entity */
+  private val renderer = Renderer(viewObject)
     
-    /**
-     * Displays this Entity
-     */
-    def display = renderer.display(viewEntity)
+  /**
+   * Displays this Entity
+   */
+  def display = renderer.display(this)
+    
+  /**
+   * Gets the value of the Property {@code prop} of this Entity.
+   */
+  private[view] def apply(prop: Setting) = {
+    
+    import Setting.Value._
+    
+    viewObject(prop) match {
+      case Data(data) => data
+      case Variable(variable) => viewEntity(variable).data
+    }
+  }
 }

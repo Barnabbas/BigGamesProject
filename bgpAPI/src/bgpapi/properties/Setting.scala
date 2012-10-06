@@ -5,7 +5,7 @@ package bgpapi.properties
  * @author Barnabbas
  *
  */
-class Setting[T](name: String) extends Property[T](name)
+class Setting(name: String) extends Property(name)
 
 /**
  * The additional classes to work with Setting.
@@ -17,7 +17,7 @@ object Setting {
 	 * at the ViewObject classes.<br>
 	 * A Setting Value can either be the data for the value or a pointer to a variable.
 	 */
-	sealed trait Value[T] extends Property.Value[T]
+	sealed trait Value extends Property.Value
 
 	object Value {
 
@@ -25,15 +25,12 @@ object Setting {
 		 * A SettingsValue containing raw Data.
 		 * The value is immediatly the Data.
 		 */
-		case class Data[T](data: T) extends Value[T]
+		case class Data(data: Any) extends Value
 
 		/**
 		 * A SettingsValue pointing to a variable.
 		 * The value is found in the Entity at the Variable {@code variable}.
 		 */
-		case class Variable[T](variable: Variable[T]) extends Value[T]
+		case class Variable(variable: bgpapi.properties.Variable) extends Value
 	}
-
-	class Tuple[T](setting: Setting[T], value: Value[T])
-		extends Property.Tuple[T, Setting[T], Value[T]](setting, value)
 }

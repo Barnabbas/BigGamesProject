@@ -114,7 +114,7 @@ object ControllerFrame extends SimpleSwingApplication {
              * Have to be called when the list is modified */
             def update() = {
                 list.listData = Debug.active
-                addComboBox.peer.setModel(ComboBox.newConstantModel("" :: Debug.passive))
+//                addComboBox.peer.setModel(ComboBox.newConstantModel("" :: Debug.passive))
             }
             
             val removeItem = new Action("Remove debugger"){

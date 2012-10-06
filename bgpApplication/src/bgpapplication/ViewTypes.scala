@@ -10,14 +10,33 @@ package bgpapplication
  * Client
  */
 import bgpapi.view.ViewType
+import bgpapi.properties.Setting
 
 object ViewTypes {
     
-    val text = new ViewType('text, List('text))
+  /**
+   * This object contains all properties used by the ViewTypes
+   */
+  private object settings{
+    val size = new Setting("size")
+  }
+  
+  /**
+   * This ViewType represents the squares. This is just a testing ViewType
+   */
+  object square extends ViewType('square, Set(settings.size)){
+    val size = settings.size
+  }
     
-    val types = Map('text -> text)
+  private val types = Map('square -> square)
     
-    def apply(name: Symbol) = types(name)
-    def apply(name: String): ViewType = apply(Symbol(name))
+  /**
+   * Gets the type named {@code name}.
+   */
+  def apply(name: Symbol) = types(name)
+  /**
+   * Gets the type named {@code name}.
+   */
+  def apply(name: String): ViewType = apply(Symbol(name))
 
 }
