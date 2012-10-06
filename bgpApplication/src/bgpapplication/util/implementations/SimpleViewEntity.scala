@@ -6,7 +6,6 @@
 package bgpapplication.util.implementations
 
 import bgpapi.view.ViewObject
-import bgpapplication.util.PropertyMap._
 import bgpapi.view.ViewEntity
 import bgpapi.properties.Variable
 import bgpapi.properties._
@@ -16,26 +15,27 @@ import bgpapi.properties._
  * @param viewObject the ViewObject that this Entity instances of.
  * @param initVariables the initial values of the properties for this ViewEntity.
  */
-class SimpleViewEntity(viewObject: ViewObject, initVariables: VariableMap) extends ViewEntity with Serializable {
-  // todo: checkVariables not working, because of the types changing during sending
+class SimpleViewEntity(viewObject: ViewObject, initVariables: Map[Variable, Variable.Value])
+    extends ViewEntity with Serializable {
+  // todo: testing checkvariables again
   // checking for valid variables
   checkVariables();
-    
+
   /**
    * A Map between the properties and the values
    */
   private var values = initVariables
-    
+
   /**
    * Gets the value of variable {@code v}
    * @param p the Variable to get the value of
-   * 
+   *
    * @throws NoSuchElementException if there is no value for {@code v}
    */
   final override def apply(v: Variable) = values(v)
-  
+
   final override def definer = viewObject.definition
-    
+
   /**
    * Sets the value of {@code p} to {@code v}.<br>
    * You can only set values of properties in {@code properties}.
@@ -46,7 +46,7 @@ class SimpleViewEntity(viewObject: ViewObject, initVariables: VariableMap) exten
     values += variable -> value
     onUpdate(variable, value)
   }
-    
+
   /**
    * Will be called when a property value got changed.<br>
    * Can be overridden to be notified when this ViewEntity is updated
@@ -54,7 +54,7 @@ class SimpleViewEntity(viewObject: ViewObject, initVariables: VariableMap) exten
   protected def onUpdate(variable: Variable, value: Variable.Value) = {
     // to override
   }
-    
+
   /**
    * Checks if all variables of the ViewObject has been set.<br>
    * Checked using the ViewDefinition currently.
@@ -64,11 +64,11 @@ class SimpleViewEntity(viewObject: ViewObject, initVariables: VariableMap) exten
   private def checkVariables() = {
     val variables = definer.properties
     val isComplete = {
-      variables.forall{v =>
+      variables.forall { v =>
         initVariables.isDefinedAt(v)
       }
     }
-    require(isComplete, "Not all variables are set in " + viewObject + 
-            "\nmissing: " + (variables &~ initVariables.keySet))
+    require(isComplete, "Not all variables are set in " + viewObject +
+      "\nmissing: " + (variables &~ initVariables.keySet))
   }
 }

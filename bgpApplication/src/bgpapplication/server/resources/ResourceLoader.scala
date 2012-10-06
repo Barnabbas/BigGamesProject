@@ -15,8 +15,6 @@ import bgpapi.game.GameTheme
 import java.io.File
 import scala.xml.XML
 
-
-
 /**
  * Creates a new ResourceLoader that will load the files for the GameTheme 
  * File {@code file}.<br>
@@ -89,8 +87,6 @@ class ResourceLoader(file: File) {
 }
 
 object ResourceLoader {
-    
-    // todo: warning xml-useage in ResourceLoader (old code)
     
     /**
      * Determines whether {@code file} can be used for this ResourceLoader.

@@ -6,7 +6,6 @@
 package bgpapplication.networking
 
 import bgpapi.properties.Variable
-import bgpapplication.util.PropertyMap._
 
 sealed class Message
 
@@ -82,7 +81,7 @@ object Message{
          * @param objectID the identifier of the Object this Entity is build on
          * @param variables the values of the variables to start with
          */
-        case class Create(id: Int, objectID: String, variables: VariableMap) extends Message
+        case class Create(id: Int, objectID: String, variables: Map[Variable, Variable.Value]) extends Message
 
         /**
          * message indicating that a property of a ViewEntity should be changed.

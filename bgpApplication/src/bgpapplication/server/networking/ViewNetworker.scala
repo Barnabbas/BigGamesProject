@@ -16,7 +16,6 @@ import bgpapplication.util.Debug
 import scala.actors.Actor
 import scala.collection.mutable.HashMap
 import Client._
-import bgpapplication.util.PropertyMap._
 import bgpapplication.util.implementations.SimpleViewEntity
 
 /**
@@ -107,7 +106,7 @@ private[networking] class ViewNetworker(clients: List[Client]) extends View {
 	/**
 	 * The ViewEntity implementation for the Server
 	 */
-	private class ServerViewEntity(viewObject: ViewObject, vars: VariableMap)
+	private class ServerViewEntity(viewObject: ViewObject, vars: Map[Variable, Variable.Value])
 			extends SimpleViewEntity(viewObject, vars) {
 		override def onUpdate(p: Variable, v: Variable.Value) = updateEntity(this, p, v)
 	}

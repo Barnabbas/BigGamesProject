@@ -19,7 +19,7 @@ private[resources] trait DataReader {
      * @throws DataReader.FormatException when there is an error in the format
      * of the data.
      */
-    def get[T <: Resource](identifier: String): T
+    def get[T <: Resource](identifier: String)(implicit man: Manifest[T]): T
 
 }
 

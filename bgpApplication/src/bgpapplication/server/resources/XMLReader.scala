@@ -16,7 +16,6 @@ import bgpapi.game.GameTheme
 import bgpapi.view._
 import bgpapplication.ViewTypes
 import bgpapplication.util.Debug
-import bgpapplication.util.PropertyMap
 import bgpapplication.util.implementations._
 import java.io.File
 import java.io.FilenameFilter
@@ -37,7 +36,7 @@ private[resources] class XMLReader(directory: File) extends DataReader {
   /**
    * A map between the keys and the xml-nodes.
    */
-  private val nodes = nodeMap
+  private val nodes = nodeMap 
   /**
    * The Resources that are already loaded.
    */
@@ -46,12 +45,11 @@ private[resources] class XMLReader(directory: File) extends DataReader {
   /**
    * Gets an Object based on id
    */
-  override def get[T <: Resource](id: String): T = {
+  override def get[T <: Resource](id: String)(implicit man: Manifest[T]): T = {
     debug("getting " + id)
     if (loadedResources contains id){
       val res = loadedResources(id)
-      // todo: add something like T.toString
-      require(res.isInstanceOf[T], "The resource \"" + id + "\" is not of the requested type")
+      require(res.isInstanceOf[T], "The resource \"" + id + "\" is not of type" + man.toString)
       res.asInstanceOf[T]
     } else {
       require(nodes contains id, "There is no Resource with id \"" + id + '\"')
@@ -62,7 +60,7 @@ private[resources] class XMLReader(directory: File) extends DataReader {
     }
   }
     
-  private def get[T <: Resource](node: Node): T = {
+  private def get[T <: Resource](node: Node)(implicit man: Manifest[T]): T = {
     val res: Resource = node.label match{
       case "link" => getLink[T](node)
       case "viewobject" => getViewObject(node)
@@ -78,16 +76,13 @@ private[resources] class XMLReader(directory: File) extends DataReader {
                                    "\n" + node)
   }
     
-  private def getLink[T <: Resource](node: Node): T = {
+  private def getLink[T <: Resource](node: Node)(implicit man: Manifest[T]): T = {
     assert(node.label == "link", "Node should be of type Link")
     return get[T](node.id)
   }
     
   private def getViewObject(node: NodeSeq): ViewObject = {
     val id = node.id
-        
-    // todo: remove debug
-    debug("ViewObject: definition = " + (node \@ "definition") + " in node: \n" + node)
         
     val viewDef = get[ViewDefinition](node \@ "definition")
     val vType = ViewTypes(node \ "type" text)
@@ -100,8 +95,8 @@ private[resources] class XMLReader(directory: File) extends DataReader {
                 
       if (!variable.isEmpty){ // there is a variable
         // the property of the variable
-        val prop = viewDef.property(variable \@ "var")
-        // todo: error when property not found
+        val prop = try viewDef.property(variable \@ "var")
+        catch {case e: NoSuchElementException => throw new DataReader.FormatException("")}
         
         return Setting.Value.Variable(prop)
       } else { // there is no variable (just take raw data)

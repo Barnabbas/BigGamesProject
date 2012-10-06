@@ -47,11 +47,13 @@ object Renderer {
     renderers isDefinedAt vType
   }
 
+  
   /* --- RendererFactory stuff  --- */
 
   private trait RendererFactory {
     def apply(obj: ViewObject): Renderer
   }
+  
 
   /**
    * This will create Renderers to draw square. (... just for testing)
@@ -65,6 +67,7 @@ object Renderer {
           case f: Float => f
           case a => throw new IllegalArgumentException(a + " must be a float")
         }
+        
         // set the color of the quad (R,G,B,A)
         glColor3f(0.5f, 0.5f, 1.0f);
 

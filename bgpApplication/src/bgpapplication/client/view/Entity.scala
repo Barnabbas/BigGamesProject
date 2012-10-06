@@ -10,17 +10,17 @@ package bgpapplication.client.view
  * Entities are used by {@link ClientView} to display everything
  */
 import bgpapi.view._
-import bgpapplication.util.PropertyMap._
 import bgpapplication.util.implementations.SimpleViewEntity
 import bgpapi.properties.Property
 import bgpapi.properties.Setting
+import bgpapi.properties.Variable
 
 /**
  * An Entity that will displayed according to {@code viewObject} and {@code viewEntity}.
  * @param viewObject how this Entity should be displayed
  * @param ViewEntity additional properties that can be set during run-time
  */
-class Entity(viewObject: ViewObject, variables: VariableMap) {
+class Entity(viewObject: ViewObject, variables: Map[Variable, Variable.Value]) {
     
   /**
    * the ViewEntity containing the properties for this Entity
@@ -44,7 +44,7 @@ class Entity(viewObject: ViewObject, variables: VariableMap) {
     
     viewObject(prop) match {
       case Data(data) => data
-      case Variable(variable) => viewEntity(variable).data
+      case Setting.Value.Variable(variable) => viewEntity(variable).data
     }
   }
 }
