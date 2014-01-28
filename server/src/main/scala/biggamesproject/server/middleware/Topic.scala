@@ -41,6 +41,6 @@ object Topic {
 	 */
 	def apply(id: String)(implicit publisher: TopicPublisher): Topic = {
 		// get the topic from topics, or add and return new topic
-		topics.getOrElse(id, new Topic(id, publisher))
+		topics.getOrElseUpdate(id, new Topic(id, publisher))
 	}
 }
