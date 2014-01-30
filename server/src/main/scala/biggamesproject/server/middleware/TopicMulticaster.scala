@@ -1,6 +1,6 @@
 package biggamesproject.server.middleware
 
-import scala.actors.ActorRef
+import akka.actor.ActorRef
 
 
 /**
