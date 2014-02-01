@@ -1,7 +1,7 @@
 package biggamesproject.client.middleware
 
-import biggamesproject.server.middleware.TopicPublisher
 import scala.collection.mutable.HashMap
+import scala.collection.mutable.SynchronizedMap
 
 /**
  * A Topic is used to receive notifications when Events happens.
@@ -27,7 +27,7 @@ object Topic {
 	/**
 	 * A map between the id of the topics and the Topic itself
 	 */
-	private val topics = new HashMap[String, Topic]()
+	private val topics = new HashMap[String, Topic] with SynchronizedMap[String, Topic]
 	
 	/**
 	 * Creates a new Topic with the given name.
