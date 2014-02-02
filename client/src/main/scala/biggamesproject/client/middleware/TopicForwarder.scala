@@ -1,7 +1,6 @@
 package biggamesproject.client.middleware
 
 import scala.collection.mutable
-import scala.collection.mutable.HashMap
 
 /**
  * This is a simple implementation of the TopicSubsriber that allows message to be published to, which 
@@ -14,11 +13,12 @@ class TopicForwarder extends TopicSubscriber {
 	 * Holds the subscribed Handlers per Topic.
 	 * By default all topics are empty
 	 */
-	private val subscriptions: mutable.Map[Topic, mutable.Set[Handler]] = mutable.Map.empty withDefault (_ => mutable.Set.empty)
+	private val subscriptions: mutable.Map[Topic, mutable.Set[Handler]] = mutable.Map.empty
 	
 	override def subscribe(topic: Topic, handler: Handler): Unit = synchronized {
 		// adding the handler to the subscriptions for topic
-		subscriptions(topic) += handler
+		val handlers = subscriptions.getOrElseUpdate(topic, mutable.Set.empty)
+		handlers += handler
 	}
 	
 	/**
